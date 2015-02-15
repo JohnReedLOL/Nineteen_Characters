@@ -36,8 +36,8 @@ final public class MapTile implements Serializable {
      *
      * @param terrain - terrain to be added to the tile
      */
-    public int initializeTerrain(Terrain terrain) {
-        if (this.terrain_ == null && terrain != null) {
+    public int addTerrain(Terrain terrain) {
+        if (terrain != null) {
             this.terrain_ = terrain;
             return 0;
         } else {

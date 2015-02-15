@@ -23,8 +23,8 @@ public abstract class AreaFunctor {
         int right_edge = x_center + radius;
         int top = y_center + radius;
         int bottom = y_center - radius;
-        for (int i = top; i > bottom; --i) {
-            for (int j = left_edge; j < right_edge; ++j) {
+        for (int i = top; i >= bottom; --i) {
+            for (int j = left_edge; j <= right_edge; ++j) {
                 repeat(j, i, strength);
             }
         }

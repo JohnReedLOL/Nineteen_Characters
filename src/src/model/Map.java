@@ -162,7 +162,7 @@ class Map implements SaveData{
      * @return error code
      */
     public int initializeTerrain(Terrain t, int x, int y) {
-        int error_code = this.map_grid_[y][x].initializeTerrain(t);
+        int error_code = this.map_grid_[y][x].addTerrain(t);
         if (error_code == 0) {
             t.getMapRelation().associateWithMap(this);
             t.getMapRelation().setMapTile(this.map_grid_[y][x]);
