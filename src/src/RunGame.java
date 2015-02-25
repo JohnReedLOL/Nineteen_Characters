@@ -86,8 +86,8 @@ public class RunGame
 				avatar_.setOccupation(new Sneak());
 			avatar_.setRepresentation(br.readLine().charAt(0));
 			
-			avatar.getStatsPack().life_ = Integer.parseInt(br.readLine());
-			avatar.getStatsPack().mana_ = Integer.parseInt(br.readLine());
+			avatar.getStatsPack().max_life_ = Integer.parseInt(br.readLine());
+			avatar.getStatsPack().max_mana_ = Integer.parseInt(br.readLine());
 			avatar.getStatsPack().offensive_rating_ = Integer.parseInt(br.readLine());
 			avatar.getStatsPack().defensive_rating_ = Integer.parseInt(br.readLine());
 			avatar.getStatsPack().armor_rating_ = Integer.parseInt(br.readLine());
@@ -112,8 +112,8 @@ public class RunGame
 				char equip_rep = br.readLine().charAt(0);
 				boolean equip_passable = (br.readLine().equals("true") ? true : false);
 				Item equipped = new Item(equip_name, equip_rep, equip_passable, true, false);
-				equipped.getStatsPack().life_ = Integer.parseInt(br.readLine());
-				equipped.getStatsPack().mana_ = Integer.parseInt(br.readLine());
+				equipped.getStatsPack().max_life_ = Integer.parseInt(br.readLine());
+				equipped.getStatsPack().max_mana_ = Integer.parseInt(br.readLine());
 				equipped.getStatsPack().offensive_rating_ = Integer.parseInt(br.readLine());
 				equipped.getStatsPack().defensive_rating_ = Integer.parseInt(br.readLine());
 				equipped.getStatsPack().armor_rating_ = Integer.parseInt(br.readLine());
@@ -134,8 +134,8 @@ public class RunGame
 				char item_rep = br.readLine().charAt(0);
 				boolean item_passable = (br.readLine() == "true" ? true : false);
 				Item item = new Item(next_name, item_rep, item_passable, true, false);
-				item.getStatsPack().life_ = Integer.parseInt(br.readLine());
-				item.getStatsPack().mana_ = Integer.parseInt(br.readLine());
+				item.getStatsPack().max_life_ = Integer.parseInt(br.readLine());
+				item.getStatsPack().max_mana_ = Integer.parseInt(br.readLine());
 				item.getStatsPack().offensive_rating_ = Integer.parseInt(br.readLine());
 				item.getStatsPack().defensive_rating_ = Integer.parseInt(br.readLine());
 				item.getStatsPack().armor_rating_ = Integer.parseInt(br.readLine());
@@ -220,8 +220,8 @@ public class RunGame
 					br.readLine();
 				} else {
 					Item item = new Item(item_name, item_rep, item_passable, item_pickupable, item_isoneshot);
-					item.getStatsPack().life_ = Integer.parseInt(br.readLine());
-					item.getStatsPack().mana_ = Integer.parseInt(br.readLine());
+					item.getStatsPack().max_life_ = Integer.parseInt(br.readLine());
+					item.getStatsPack().max_mana_ = Integer.parseInt(br.readLine());
 					item.getStatsPack().offensive_rating_ = Integer.parseInt(br.readLine());
 					item.getStatsPack().defensive_rating_ = Integer.parseInt(br.readLine());
 					item.getStatsPack().armor_rating_ = Integer.parseInt(br.readLine());

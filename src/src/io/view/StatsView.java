@@ -78,18 +78,18 @@ public final class StatsView extends Viewport
     	writeStringToContents(18, 13, rightAlign(3, "" + avatar_reference_.getStatsPack().hardiness_level_));
     	
     	StringBuilder hearts = new StringBuilder();
-    	for (int i = 0; i < (avatar_reference_.getStatsPack().current_life_/avatar_reference_.getStatsPack().life_)*10; i++)
+    	for (int i = 0; i < (avatar_reference_.getStatsPack().current_life_/avatar_reference_.getStatsPack().max_life_)*10; i++)
     		hearts.append("♥");
     	writeStringToContents(38, 6, rightAlign(10, hearts.toString()));
     	writeStringToContents(40, 7, rightAlign(3, "" + avatar_reference_.getStatsPack().current_life_));
-    	writeStringToContents(44, 7, rightAlign(3, "" + avatar_reference_.getStatsPack().life_));
+    	writeStringToContents(44, 7, rightAlign(3, "" + avatar_reference_.getStatsPack().max_life_));
 
     	StringBuilder diamonds = new StringBuilder();
-    	for (int i = 0; i < avatar_reference_.getStatsPack().current_mana_/avatar_reference_.getStatsPack().mana_*10; i++)
+    	for (int i = 0; i < avatar_reference_.getStatsPack().current_mana_/avatar_reference_.getStatsPack().max_mana_*10; i++)
     		diamonds.append("♦");
     	writeStringToContents(38, 9, rightAlign(10, diamonds.toString()));
     	writeStringToContents(40, 10, rightAlign(3, "" + avatar_reference_.getStatsPack().current_mana_));
-    	writeStringToContents(44, 10, rightAlign(3, "" + avatar_reference_.getStatsPack().mana_));
+    	writeStringToContents(44, 10, rightAlign(3, "" + avatar_reference_.getStatsPack().max_mana_));
 
     	StringBuilder spades = new StringBuilder();
     	for (int i = 0; i < (avatar_reference_.getStatsPack().quantity_of_experience_

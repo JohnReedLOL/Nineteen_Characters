@@ -28,10 +28,7 @@ public class MapDrawableThing_Relation {
                 }
                 Entity to_hurt = infliction.getEntity();
                 if (to_hurt != null) {
-                    EntityStatsPack s = to_hurt.getStatsPack();
-                    // s.current_life_ -= strength;
                     to_hurt.receiveAttack(strength, null); // kills avatar if health is negative
-                    Display.setMessage("Current Life after: " + s.current_life_, 3);
                 }
             }
         }
@@ -49,9 +46,7 @@ public class MapDrawableThing_Relation {
                 }
                 Entity to_heal = infliction.getEntity();
                 if (to_heal != null) {
-                    EntityStatsPack s = to_heal.getStatsPack();
-                    s.current_life_ += strength;
-                    Display.setMessage("Current Life after: " + s.current_life_, 3);
+                    to_heal.receiveHeal(strength, null);
                 }
             }
         }
@@ -75,9 +70,7 @@ public class MapDrawableThing_Relation {
                 }
                 Entity to_kill = infliction.getEntity();
                 if (to_kill != null) {
-                    EntityStatsPack s = to_kill.getStatsPack();
                     to_kill.commitSuicide();
-                    Display.setMessage("Lives left after: " + s.lives_left_, 3);
                 }
             }
         }
@@ -102,11 +95,9 @@ public class MapDrawableThing_Relation {
                 }
                 Entity to_level = infliction.getEntity();
                 if (to_level != null) {
-                    EntityStatsPack s = to_level.getStatsPack();
                     for (int i = 0; i < num_level_ups; ++i) {
                         to_level.gainEnoughExperienceTolevelUp();
                     }
-                    Display.setMessage("Current Level after: " + s.cached_current_level_, 3);
                 }
             }
         }

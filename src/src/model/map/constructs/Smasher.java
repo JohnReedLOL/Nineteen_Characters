@@ -12,7 +12,7 @@ public final class Smasher implements Occupation {
 
     public void change_stats(EntityStatsPack current_stats) {
         //for smasher
-        current_stats.strength_level_ += 1;
+        current_stats.increaseStrengthLevelByOne();
 
     }
 

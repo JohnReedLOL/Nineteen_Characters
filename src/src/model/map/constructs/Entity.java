@@ -15,8 +15,8 @@ import src.io.view.Display;
  * on the map.
  */
 abstract public class Entity extends DrawableThing {
-	
-	private static final int experience_between_levels = 100;
+
+    private static final int experience_between_levels = 100;
 
     /**
      * Include stat increase from item i.e., item with stat increase is equipped
@@ -31,7 +31,7 @@ abstract public class Entity extends DrawableThing {
      * Entities should check their health after they are damaged.
      */
     public void checkHealth() {
-        if (stats_pack_.current_life_ < 1) {
+        if (stats_pack_.getCurrent_life_() <= 0) {
             commitSuicide();
         }
     }
@@ -40,10 +40,16 @@ abstract public class Entity extends DrawableThing {
      * Entity dies, Game Over.
      */
     public void commitSuicide() {
-        --stats_pack_.lives_left_;
-        if (stats_pack_.lives_left_ < 0) {
-            System.out.println("game over");
+        int health_left = stats_pack_.getCurrent_life_();
+        stats_pack_.deductCurrentLifeBy(health_left);
+        // SPAWN!!!!!!!!!!!
+        if (stats_pack_.getLives_left_() < 0) {
+            gameOver();
         }
+    }
+
+    public void gameOver() {
+        System.out.println("game over");
     }
 
     /**
@@ -73,7 +79,7 @@ abstract public class Entity extends DrawableThing {
         super(name, representation);
         inventory_ = new ArrayList<Item>();
     }
-    
+
     // Only 1 equipped item in iteration 1
     private Item equipped_item_;
 
@@ -146,12 +152,9 @@ abstract public class Entity extends DrawableThing {
      * @author John
      */
     public void gainEnoughExperienceTolevelUp() {
-        // Increases experience up to the next multiple of 100
-        stats_pack_.quantity_of_experience_
-                = ((stats_pack_.quantity_of_experience_ / 100) * 100) + 100;
-        this.levelUp();
+        stats_pack_.increaseQuantityOfExperienceToNextLevel();
     }
-    
+
     public boolean hasEquipped() {
         if (equipped_item_ != null) {
             return true;
@@ -168,6 +171,7 @@ abstract public class Entity extends DrawableThing {
     }
 
     protected ArrayList<Item> inventory_;
+
     /**
      * Add item to the inventory.
      *
@@ -228,24 +232,12 @@ abstract public class Entity extends DrawableThing {
         }
     }
 
-    /**
-     * this function levels up an entity Stubbed to work with new
-     * EntityStatsPack class
-     *
-     * @author Jessan, John
-     */
-    public void levelUp() {
-        stats_pack_.cached_current_level_ += 1;
-        if (occupation_ == null) {
-            //levelup normally
-            //EntityStatsPack new_stats = new EntityStatsPack();
-            //set_default_stats_pack(get_default_stats_pack_().add(new_stats));
-            stats_pack_.hardiness_level_ += 1;
-        } //if occupation is not null/have an occupation
-        else {
-            occupation_.change_stats(stats_pack_);
-        }
-        //recalculateStats();
+    public void gainExperiencePoints(int amount) {
+        stats_pack_.increaseQuantityOfExperienceBy(amount);
+    }
+
+    public int checkLevel() {
+        return stats_pack_.getCached_current_level_();
     }
 
     // map_relationship_ is used in place of a map_referance_
@@ -271,7 +263,7 @@ abstract public class Entity extends DrawableThing {
     }
 
     private Occupation occupation_ = null;
-    
+
     /**
      * Get the Entities occupation.
      *
@@ -301,11 +293,19 @@ abstract public class Entity extends DrawableThing {
     }
 
     public void receiveAttack(int damage, Occupation occupation) {
-        if(occupation == null) {
-            this.stats_pack_.current_life_ -= damage;
-            if(this.stats_pack_.current_life_ <= 0) {
-                this.commitSuicide();
+        if (occupation == null) {
+            this.stats_pack_.deductCurrentLifeBy(damage);
+            if (stats_pack_.getLives_left_() < 0) {
+                gameOver();
             }
+        } else {
+            // ...
+        }
+    }
+
+    public void receiveHeal(int strength, Occupation occupation) {
+        if (occupation == null) {
+            this.stats_pack_.increaseCurrentLifeBy(strength);
         } else {
             // ...
         }
@@ -313,13 +313,6 @@ abstract public class Entity extends DrawableThing {
 
     //private final int max_level_;
     private EntityStatsPack stats_pack_ = new EntityStatsPack();
-
-    /**
-     * Get Entities StatsPack.
-     */
-    public EntityStatsPack getStatsPack() {
-        return stats_pack_;
-    }
 
     /**
      * Removes state increase from item i.e., item with stat increase is
@@ -330,7 +323,7 @@ abstract public class Entity extends DrawableThing {
     public void subtractItemStatsFromMyStats(Item item) {
         stats_pack_.reduceBy(item.getStatsPack());
     }
-    
+
     public String toString() {
         String s = "Entity name: " + name_;
 

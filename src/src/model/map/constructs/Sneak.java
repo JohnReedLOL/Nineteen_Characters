@@ -13,7 +13,7 @@ public final class Sneak implements Occupation
 {
     public void change_stats(EntityStatsPack current_stats) {
         //for sneak
-        current_stats.agility_level_ += 1;
+        current_stats.increaseAgilityLevelByOne();
 
     }
     

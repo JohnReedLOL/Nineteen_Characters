@@ -56,8 +56,8 @@ public class SavedGame {
     		sb.append(my_avatar.getMapRelation().getMyYCoordinate() + "\n");
     		sb.append(my_avatar.getOccupation().toString() + "\n");
     		sb.append(my_avatar.getRepresentation() + "\n");
-    		sb.append(my_avatar.getStatsPack().life_ + "\n");
-    		sb.append(my_avatar.getStatsPack().mana_ + "\n");
+    		sb.append(my_avatar.getStatsPack().max_life_ + "\n");
+    		sb.append(my_avatar.getStatsPack().max_mana_ + "\n");
     		sb.append(my_avatar.getStatsPack().offensive_rating_ + "\n");
     		sb.append(my_avatar.getStatsPack().defensive_rating_ + "\n");
     		sb.append(my_avatar.getStatsPack().armor_rating_ + "\n");
@@ -81,8 +81,8 @@ public class SavedGame {
     			sb.append(equipped.name_ + "\n");
     			sb.append(equipped.getRepresentation() + "\n");
     			sb.append(equipped.isPassable() ? "true\n" : "false\n");
-    			sb.append(equipped.getStatsPack().life_ + "\n");
-    			sb.append(equipped.getStatsPack().mana_  + "\n");
+    			sb.append(equipped.getStatsPack().max_life_ + "\n");
+    			sb.append(equipped.getStatsPack().max_mana_  + "\n");
     			sb.append(equipped.getStatsPack().offensive_rating_ + "\n");
     			sb.append(equipped.getStatsPack().defensive_rating_ + "\n");
     			sb.append(equipped.getStatsPack().armor_rating_ + "\n");
@@ -93,8 +93,8 @@ public class SavedGame {
     			sb.append(item.name_ + "\n");
     			sb.append(item.getRepresentation() + "\n");
     			sb.append(item.isPassable() ? "true\n" : "false\n");
-    			sb.append(item.getStatsPack().life_ + "\n");
-    			sb.append(item.getStatsPack().mana_  + "\n");
+    			sb.append(item.getStatsPack().max_life_ + "\n");
+    			sb.append(item.getStatsPack().max_mana_  + "\n");
     			sb.append(item.getStatsPack().offensive_rating_ + "\n");
     			sb.append(item.getStatsPack().defensive_rating_ + "\n");
     			sb.append(item.getStatsPack().armor_rating_ + "\n");
@@ -131,8 +131,8 @@ public class SavedGame {
 				sb.append(item.getViewable() ? "true\n" : "false\n");
 				sb.append(item.isPassable() ? "true\n" : "false\n");
     			sb.append(item.goesInInventory() ? "true\n" : "false\n");
-    			sb.append(item.getStatsPack().life_ + "\n");
-    			sb.append(item.getStatsPack().mana_  + "\n");
+    			sb.append(item.getStatsPack().max_life_ + "\n");
+    			sb.append(item.getStatsPack().max_mana_  + "\n");
     			sb.append(item.getStatsPack().offensive_rating_ + "\n");
     			sb.append(item.getStatsPack().defensive_rating_ + "\n");
     			sb.append(item.getStatsPack().armor_rating_ + "\n");
