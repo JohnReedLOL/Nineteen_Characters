@@ -9,8 +9,11 @@ import java.util.Date;
 import src.model.map.constructs.Avatar;
 import src.io.controller.ChatBoxController;
 import src.io.controller.UserController;
+import src.model.map.constructs.Bow;
 import src.model.map.constructs.Item;
+import src.model.map.constructs.Merchant;
 import src.model.map.constructs.OneHandedSword;
+import src.model.map.constructs.PickupableItem;
 import src.model.map.constructs.Sheild;
 import src.model.map.constructs.Terrain;
 import src.model.map.constructs.Villager;
@@ -85,6 +88,19 @@ public class RunGame {
         map_.addItem(kill, 9, 2);
         map_.addItem(level, 12, 2);
         
+        //These Items will be added to the Merchants shop.
+        Item longSword = new OneHandedSword("Long Sword", '|');
+        Item shield = new Sheild("Shield", 'O');
+        Item bow = new Bow("bow",')');
+        //Making Merchant and adding items to his shop.
+        Merchant merchant = new Merchant("Merchant", 'M'); 
+        merchant.addItemToBeSold((PickupableItem)longSword);
+        merchant.addItemToBeSold((PickupableItem)shield);
+        merchant.addItemToBeSold((PickupableItem)bow);
+        map_.addEntity(merchant,25, 3);
+        
+        
+        //Adding a Villager.
         Villager villager =new Villager("Tom", 'V');
         map_.addEntity(villager,0,5);
         

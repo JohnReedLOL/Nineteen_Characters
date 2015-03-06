@@ -64,7 +64,14 @@ public final class Avatar extends Entity {
     public int getBargain_() {
         return bargain_;
     }
-
+    
+    /**
+     * Bargains with Merchant. 
+     */
+    public void Bargain(){
+    	((Merchant)(map_relationship_.getMap().getTile(25,3).getEntity())).displayShop();
+    }
+    
     private int observation_ = 1;
 
     public int getObservation_() {
@@ -427,6 +434,9 @@ public final class Avatar extends Entity {
             case 'l':
                 this.observe();
                 break;
+            case 'B':
+            	this.Bargain();
+            	break;
             default: // no valid input
                 System.out.println("Invalid input in Avatar.acceptKeyCommand() ");
                 break;
