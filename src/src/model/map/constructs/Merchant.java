@@ -37,4 +37,14 @@ public class Merchant extends Villager {
 		else
 			return null;
 	}
+
+	/**
+	 * Gets an ArrayList of pickupable items that are for sale in the Merchant's
+	 * shop.
+	 * 
+	 * @return itemsForSale an ArrayList of PickupableItems.
+	 */
+	public ArrayList<PickupableItem> itemsForSale() {
+		return itemsForSale;
+	}
 }
