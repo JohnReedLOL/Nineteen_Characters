@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import src.FacingDirection;
 
 import src.model.map.MapEntity_Relation;
-import src.io.view.Display;
+import src.io.view.display.Display;
 import src.FacingDirection;
 import src.model.map.constructs.PrimaryHandHoldable;
 import src.model.map.constructs.SecondaryHandHoldable;

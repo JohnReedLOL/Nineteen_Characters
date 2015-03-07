@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import src.IO_Bundle;
 import src.model.Vector2;
+import src.model.map.constructs.Item;
 
 /**
  * Abstract view class that the views inherit from.
@@ -23,6 +24,8 @@ public abstract class Viewport {
     private final int width_=80;
 	private transient char[][] view_contents_;
 	private transient Color[][] color_contents_;
+	private transient String item_list_ = "";
+	private transient String equipped_list_ = "";
 	public int getHeight(){return height_;}
 	public int getWidth(){return width_;}
 	public abstract boolean getInput(char c);
@@ -47,6 +50,45 @@ public abstract class Viewport {
 	public Color[][] getColorContents(){
 		initGuard();
 		return color_contents_;
+	}
+	/**
+	 * Populate the items string
+	 * @param bundle
+	 */
+	protected void populateItems(IO_Bundle bundle){
+		item_list_ = "";
+		if(bundle.getInventory()!=null){
+			for(Item i : bundle.getInventory()){
+				item_list_+=i.getName()+System.lineSeparator();
+			}
+		}
+	}
+	/**
+	 * Populate the Equipped string
+	 * @param bundle
+	 */
+	protected void populateEquipped(IO_Bundle bundle){
+		equipped_list_ = "";
+		if(bundle.primary_!= null){
+			equipped_list_ += "Primary: "+System.lineSeparator()+"   "+bundle.primary_.getName();
+		}
+		if(bundle.second_ != null){
+			equipped_list_ += "Secondary : "+System.lineSeparator()+"   "+bundle.second_.getName();
+		}
+	}
+	/**
+	 * 
+	 * @return Returns a newline separated inventory list.
+	 */
+	public String getItemList(){
+		return item_list_;
+	}
+	/**
+	 * 
+	 * @return Returns a newline separated equipped list.
+	 */
+	public String getEquippedList(){
+		return equipped_list_;
 	}
 	/**
 	 * Load in ascii art from file

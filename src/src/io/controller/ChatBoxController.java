@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import src.Function;
-import src.io.view.Display;
+import src.io.view.display.Display;
 /**
  * 
  * @author Mbregg

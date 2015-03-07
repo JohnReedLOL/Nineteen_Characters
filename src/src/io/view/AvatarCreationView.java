@@ -104,6 +104,9 @@ public final class AvatarCreationView extends Viewport
 	public void renderToDisplay(IO_Bundle bundle) {
 		clear();
 		renderArray();
+		populateEquipped(bundle);
+		populateItems(bundle);
+		
 		
 	}
 

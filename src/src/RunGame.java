@@ -47,7 +47,6 @@ public class RunGame {
         initialize(); // Initialize any data we need to before loading
         populateMap();//Add stuff into the map
         startGame(); // Begin the avatarcontroller loop
-
         // testing
         //saveGameToDisk();
         //exitGame();

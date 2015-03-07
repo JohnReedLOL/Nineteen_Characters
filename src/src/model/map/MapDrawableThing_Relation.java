@@ -10,7 +10,7 @@ import src.FacingDirection;
 import src.model.map.constructs.Entity;
 import src.model.map.constructs.EntityStatsPack;
 import src.model.map.constructs.Item;
-import src.io.view.Display;
+import src.io.view.display.Display;
 
 import java.awt.Color;
 import java.math.*;

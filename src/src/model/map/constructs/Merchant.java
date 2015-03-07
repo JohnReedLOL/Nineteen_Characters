@@ -2,8 +2,6 @@ package src.model.map.constructs;
 
 import java.util.ArrayList;
 
-import src.io.view.Display;
-
 /**
  * Merchant is a type of Villager that holds items that are for sale.
  *
@@ -38,16 +36,5 @@ public class Merchant extends Villager {
 			return itemsForSale.remove(itemSlot);
 		else
 			return null;
-	}
-
-	public void displayShop() {
-		Display.getDisplay().setMessage("~~~~~Shop Items~~~~~");
-		if (!itemsForSale.isEmpty()) {
-			for (int i = 0; i < itemsForSale.size(); ++i) {
-				Display.getDisplay().setMessage(
-						(i + 1) + ") " + itemsForSale.get(i).name_);
-			}
-		} else
-			Display.getDisplay().setMessage("No Items in the shop.");
 	}
 }

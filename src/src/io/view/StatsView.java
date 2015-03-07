@@ -43,6 +43,8 @@ public final class StatsView extends Viewport
 	@Override
 	public void renderToDisplay(IO_Bundle bundle) {
 		renderArray(bundle);
+		populateEquipped(bundle);
+		populateItems(bundle);
 	}
 	/*
 	 * Helper method to handle bulk of rendering, keeps renderToDisplay pure

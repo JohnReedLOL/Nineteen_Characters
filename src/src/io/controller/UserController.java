@@ -11,17 +11,18 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
 
+import src.Function;
 import src.model.map.MapUser_Interface;
 import src.io.view.AvatarCreationView;
-import src.io.view.Display;
 import src.io.view.MapView;
 import src.io.view.StatsView;
 import src.io.view.Viewport;
+import src.io.view.display.Display;
 /**
  * Uses keyboard input to control the avatar
  * @author JohnReedLOL
  */
-public final class UserController implements KeyListener, MouseWheelListener
+public final class UserController implements Function<Void, Character>
 {
 	private class KeyRemapper{
 		private char remapTrigger_ = '~';
@@ -71,11 +72,10 @@ public final class UserController implements KeyListener, MouseWheelListener
 	}
 
     public UserController(MapUser_Interface mui, String uName) {
-        Display.getDisplay().addGameKeyListener(this);
-        Display.getDisplay().addGameMouseWheelListener(this);
         MapUserAble_ = mui;
         userName_ = uName;
         setView(nullChar_);
+    	Display.getDisplay().addGameInputerHandler(this);
     	Display.getDisplay().setView(currentView_);
         Display.getDisplay().printView();
         
@@ -111,10 +111,9 @@ public final class UserController implements KeyListener, MouseWheelListener
     		//I need to get this info without sending a command, sending ' ' is a hack for now.
     	}
     }
-    private void takeTurn(KeyEvent e) {
-    	char remapped = remap_.remapInput(e.getKeyChar());
+    private void takeTurn(char foo) {
+    	char remapped = remap_.remapInput(foo);
     	setView(remapped);
-
     	//my_avatar_.getInput((char)input);
 		//my_avatar_.getMapRelation().getSimpleAngle();//Example of simpleangle
 		//my_avatar_.getMapRelation().getAngle();//Example of how to use getAngle
@@ -151,32 +150,12 @@ public final class UserController implements KeyListener, MouseWheelListener
         remap_.setMap(remap);
     }
 
-    // EVENT METHODS
-	@Override
-	public void keyPressed(KeyEvent e) {
-		//Nothing to do here
-	}
+
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		//We do nothing in this situation
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		takeTurn(e);
-		
-	}
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		System.out.println("Mousewheel" + arg0.getWheelRotation());
-		if(arg0.getWheelRotation() <0 ){
-			Display.getDisplay().zoomIn();
-		}else{
-			Display.getDisplay().zoomOut();
-		}
+	public Void apply(Character foo) {
+		takeTurn(foo);
+		return null;
 	}
     
 }

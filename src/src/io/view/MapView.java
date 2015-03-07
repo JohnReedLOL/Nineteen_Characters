@@ -26,6 +26,8 @@ public final class MapView extends Viewport {
 	@Override
 	public void renderToDisplay(IO_Bundle bundle) {
 		render(bundle);//All that's needed for now.
+		populateEquipped(bundle);
+		populateItems(bundle);
 		
 	}
 	/*
