@@ -33,6 +33,7 @@ public class Monster extends Entity {
 
     @Override
     public ArrayList<String> getConversationContinuationStrings(String what_you_just_said_to_me, Entity who_is_talking_to_me) {
+        if(what_you_just_said_to_me == null ) return endConversation();
         if(what_you_just_said_to_me.equals("Select a skill to use on me. " + HardCodedStrings.getAllSkills)) {
             ArrayList<String> options = new ArrayList<String>();
             options.add("Observe " + HardCodedStrings.observe);

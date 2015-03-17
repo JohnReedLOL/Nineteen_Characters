@@ -59,21 +59,21 @@ public class GameController extends Controller {
          */
         @Override
         public Void apply(final String foo) {
-        	Thread t_ = new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-		            if (foo.startsWith("/")) {
-		                processCommandAndDisplayOutput(foo);
-		                return;
-		            }
-		            //IF it starts with a /, it's a command, so send it
-		            //To the command function, not the map.
-		            sendTextCommandAndUpdate(foo);
-					
-				}
-			});
-        	t_.start();
+            Thread t_ = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (foo.startsWith("/")) {
+                        processCommandAndDisplayOutput(foo);
+                        return;
+                    }
+                    //IF it starts with a /, it's a command, so send it
+                    //To the command function, not the map.
+                    sendTextCommandAndUpdate(foo);
+
+                }
+            });
+            t_.start();
             return null;
         }
 
@@ -105,15 +105,15 @@ public class GameController extends Controller {
 
             @Override
             public Void apply(final Character foo) {
-            	Thread t_ = new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						sendTextCommandAndUpdate(chatview_.getChoice(Character.getNumericValue(foo)));
-						
-					}
-				});
-            	t_.start();
+                Thread t_ = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        sendTextCommandAndUpdate(chatview_.getChoice(Character.getNumericValue(foo)));
+
+                    }
+                });
+                t_.start();
                 return null;
             }
         }
@@ -128,22 +128,22 @@ public class GameController extends Controller {
 
             @Override
             public Void apply(final String foo) {
-            	Thread t_ = new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-		                if (foo == null) {
-		                    return;
-		                }
-		                Key_Commands command = enumHandler.stringCommandToKeyCommand(foo);
-		                if (command == null) {
-		                    return;
-		                }
-		                takeTurnandPrintTurn(command);
-						
-					}
-				});
-            	t_.start();
+                Thread t_ = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (foo == null) {
+                            return;
+                        }
+                        Key_Commands command = enumHandler.stringCommandToKeyCommand(foo);
+                        if (command == null) {
+                            return;
+                        }
+                        takeTurnandPrintTurn(command);
+
+                    }
+                });
+                t_.start();
                 return null;
             }
         });
@@ -167,8 +167,7 @@ public class GameController extends Controller {
     }
 
     private static DatagramPacket packet = null;
-    private static Random rand = new Random();
-    
+
     private IO_Bundle sendCommandToMapWithText(Key_Commands command, String in) {
         if (SwingUtilities.isEventDispatchThread()) {
             System.err.println("GameController is running on the Swing Dispatch Thread");
@@ -182,16 +181,10 @@ public class GameController extends Controller {
                 }
             });
         }
-        try {
-        String to_send = Integer.toString(rand.nextInt(), 10) + " " + RunGame.getAvatarName() + " " + command.name() + " " + getView().getWidth()/2 + " " + getView().getHeight() / 2 + " " + in;
-        final byte[] buf = to_send.getBytes();
-        final DatagramPacket packet = new DatagramPacket(buf, buf.length, RunGame.address, Map.UDP_PORT_NUMBER);
-        RunGame.udp_socket_for_outgoing_signals.send(packet); }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        
-        final IO_Bundle to_return = MapUserAble_.sendCommandToMapWithOptionalText(getUserName(), command, getView().getWidth() / 2, getView().getHeight() / 2, "");
+        final IO_Bundle to_return = RunGame.sendStuffToMapOverTheInternet(getUserName(),
+                command, getView().getWidth() / 2, getView().getHeight() / 2, in);
+
+        //final IO_Bundle to_return = MapUserAble_.sendCommandToMapWithOptionalText(getUserName(), command, getView().getWidth() / 2, getView().getHeight() / 2, "");
         // Make the buttons says the right skill names.
         if (command == Key_Commands.BECOME_SMASHER || command == Key_Commands.BECOME_SUMMONER
                 || command == Key_Commands.BECOME_SNEAK && to_return != null) {
@@ -205,6 +198,19 @@ public class GameController extends Controller {
                             setText(to_return.occupation_.getSkillNameFromNumber(3));
                     Display.getDisplay().getSkillButton(4).
                             setText(to_return.occupation_.getSkillNameFromNumber(4));
+                }
+            });
+        }
+        // Auto focus on chatbox
+        if ((to_return != null && to_return.strings_for_communication_ != null && !to_return.strings_for_communication_.isEmpty())
+                && (command == Key_Commands.MOVE_DOWN || command == Key_Commands.MOVE_DOWNLEFT
+                || command == Key_Commands.MOVE_DOWNRIGHT || command == Key_Commands.MOVE_LEFT
+                || command == Key_Commands.MOVE_RIGHT || command == Key_Commands.MOVE_UP
+                || command == Key_Commands.MOVE_UPLEFT || command == Key_Commands.MOVE_UPRIGHT
+                || command == Key_Commands.GET_INTERACTION_OPTIONS)) {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    Display.getDisplay().requestOutBoxFocus();
                 }
             });
         }

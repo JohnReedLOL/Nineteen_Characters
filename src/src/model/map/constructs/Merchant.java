@@ -44,6 +44,7 @@ public class Merchant extends Villager {
      */
     @Override
     public ArrayList<String> getConversationContinuationStrings(String what_you_just_said_to_me, Entity who_is_talking_to_me) {
+        if(what_you_just_said_to_me == null ) return endConversation();
         ArrayList<String> options = new ArrayList<String>();
         if (what_you_just_said_to_me.equals("Super_Sword : 10 gold : " + HardCodedStrings.getReplyOptions)) {
             options.add("Buy Super_Sword! " + HardCodedStrings.trade);
