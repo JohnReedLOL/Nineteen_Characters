@@ -1,6 +1,7 @@
 package src.model.map.constructs;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Stats Pack for Drawable Things.
@@ -86,5 +87,16 @@ public class DrawableThingStatsPack implements Serializable{
     public String toString() {
         return "Offense: " + offensive_rating_ + 
                 "Armor: " + armor_rating_;
+    }
+
+    public ArrayList<byte[]> makeByteArray(){
+        ArrayList<byte[]> arrayList = new ArrayList<byte[]>();
+
+
+        arrayList.add(Integer.toString(offensive_rating_).getBytes());
+        arrayList.add(Integer.toString(armor_rating_).getBytes());
+
+
+        return arrayList;
     }
 }

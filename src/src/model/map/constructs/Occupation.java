@@ -6,6 +6,9 @@
 package src.model.map.constructs;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import src.Internet;
 import src.SkillEnum;
 
 /**
@@ -111,5 +114,16 @@ public abstract class Occupation implements Serializable {
             System.exit(-108);
         }
         return "";
+    }
+
+    public ArrayList<byte[]> makeByteArray() {
+        ArrayList<byte[]> arrayList = new ArrayList<byte[]>();
+        arrayList.add(occupation_holder_.toString().getBytes());
+        arrayList.add(Integer.toString(skill_1_level_).getBytes());
+        arrayList.add(Integer.toString(skill_2_level_).getBytes());
+        arrayList.add(Integer.toString(skill_3_level_).getBytes());
+        arrayList.add(Integer.toString(skill_4_level_).getBytes());
+
+        return arrayList;
     }
 }

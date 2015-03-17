@@ -1,6 +1,9 @@
 package src.model.map.constructs;
 
+import src.Internet;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 
 /**
@@ -332,4 +335,33 @@ public final class EntityStatsPack extends DrawableThingStatsPack implements Ser
                 ;
     }
 
+    public ArrayList<byte[]> makeByteArray(){
+        ArrayList<byte[]> arrayList = new ArrayList<byte[]>();
+        arrayList.addAll(super.makeByteArray());
+
+       // arrayList.add(Integer.toString(NUMBER_OF_EXPERIENCE_POINT_PER_LEVEL).getBytes());
+        arrayList.add(Integer.toString(lives_left_).getBytes());
+        arrayList.add(Integer.toString(strength_level_).getBytes());
+        arrayList.add(Integer.toString(agility_level_).getBytes());
+        arrayList.add(Integer.toString(intellect_level_).getBytes());
+        arrayList.add(Integer.toString(hardiness_level_).getBytes());
+        arrayList.add(Integer.toString(quantity_of_experience_).getBytes());
+        arrayList.add(Integer.toString(movement_level_).getBytes());
+        arrayList.add(Integer.toString(max_life_).getBytes());
+        arrayList.add(Integer.toString(max_mana_).getBytes());
+        arrayList.add(Integer.toString(defensive_rating_).getBytes());
+        arrayList.add(Integer.toString(moves_left_in_turn_).getBytes());
+        arrayList.add(Integer.toString(cached_current_level_).getBytes());
+        arrayList.add(Integer.toString(current_life_).getBytes());
+        arrayList.add(Integer.toString(current_mana_).getBytes());
+
+        return arrayList;
+    }
+
+    /*public EntityStatsPack makeObjectFromBytes(ArrayList<byte[]> arrayList){
+        EntityStatsPack es = new EntityStatsPack();
+        es.lives_left_ = Integer.parseInt(arrayList.get(0).toString());
+        
+    }*/
 }
+

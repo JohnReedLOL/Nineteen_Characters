@@ -144,7 +144,7 @@ abstract public class DrawableThing implements Serializable{
     }
 
     public ArrayList<String> endConversation() {
-        ArrayList<String> silence = new ArrayList<>();
+        ArrayList<String> silence = new ArrayList<String>();
         return silence;
     }
 }
