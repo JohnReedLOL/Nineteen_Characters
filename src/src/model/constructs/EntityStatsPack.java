@@ -358,10 +358,5 @@ public final class EntityStatsPack extends DrawableThingStatsPack implements Ser
         return arrayList;
     }
 
-    /*public EntityStatsPack makeObjectFromBytes(ArrayList<byte[]> arrayList){
-        EntityStatsPack es = new EntityStatsPack();
-        es.lives_left_ = Integer.parseInt(arrayList.get(0).toString());
-        
-    }*/
 }
 
