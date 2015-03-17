@@ -14,7 +14,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import src.Function;
 import src.Key_Commands;
 import src.QueueCommandInterface;
 import src.io.view.Viewport;

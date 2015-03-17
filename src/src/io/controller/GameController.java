@@ -6,29 +6,23 @@
 package src.io.controller;
 
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.SwingUtilities;
 
-import src.Function;
 import src.HardCodedStrings;
 import src.IO_Bundle;
 import src.Internet;
 import src.Key_Commands;
 import src.QueueCommandInterface;
-import src.RunGame;
 import src.enumHandler;
 import src.io.view.AvatarCreationView;
 import src.io.view.ChatBoxViewPort;
 import src.io.view.MapView;
 import src.io.view.StatsView;
 import src.io.view.display.Display;
-import src.model.map.Map;
-import src.model.map.MapUser_Interface;
+import src.model.MapUser_Interface;
 
 /**
  * Uses keyboard input to control the avatar Handles the main game mode

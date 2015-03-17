@@ -10,7 +10,8 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Random;
-import src.model.map.Map;
+
+import src.model.Map;
 
 /**
  * This class is used to connect to and send stuff over the Internet.

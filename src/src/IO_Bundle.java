@@ -9,11 +9,11 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import src.model.map.constructs.EntityStatsPack;
-import src.model.map.constructs.Occupation;
-import src.model.map.constructs.PickupableItem;
-import src.model.map.constructs.PrimaryHandHoldable;
-import src.model.map.constructs.SecondaryHandHoldable;
+import src.model.constructs.EntityStatsPack;
+import src.model.constructs.Occupation;
+import src.model.constructs.items.PickupableItem;
+import src.model.constructs.items.PrimaryHandHoldable;
+import src.model.constructs.items.SecondaryHandHoldable;
 
 /**
  * Contains contents of data for IO to user.

@@ -1,7 +1,7 @@
 package src.map.editor;
 
-import src.model.map.MapMapEditor_Interface;
-import src.model.map.constructs.Entity;
+import src.model.MapMapEditor_Interface;
+import src.model.constructs.Entity;
 /**
  * Class to add the given thing to the map when add is called.
  * Note that it may contain several things, so add may be suitable to be called several times, check with isEmpty.

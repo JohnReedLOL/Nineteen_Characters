@@ -2,38 +2,30 @@ package src;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 import src.io.controller.Controller;
 import src.io.controller.GameController;
 import src.io.controller.MapEditorController;
-import src.model.map.Map;
-import src.model.map.constructs.Avatar;
-import src.model.map.constructs.Item;
-import src.model.map.constructs.KnightsSerum;
-import src.model.map.constructs.Merchant;
-import src.model.map.constructs.Monster;
-import src.model.map.constructs.ObstacleRemovingItem;
-import src.model.map.constructs.OneHandedSword;
-import src.model.map.constructs.OneShotAreaEffectItem;
-import src.model.map.constructs.OneWayTeleportItem;
-import src.model.map.constructs.PermanentObstacleItem;
-import src.model.map.constructs.Shield;
-import src.model.map.constructs.TemporaryObstacleItem;
-import src.model.map.constructs.Terrain;
-import src.model.map.constructs.Trap;
-import src.model.map.constructs.TwoHandedSword;
-import src.model.map.constructs.Villager;
+import src.model.Map;
+import src.model.constructs.Avatar;
+import src.model.constructs.Merchant;
+import src.model.constructs.Monster;
+import src.model.constructs.Terrain;
+import src.model.constructs.Villager;
+import src.model.constructs.items.Item;
+import src.model.constructs.items.KnightsSerum;
+import src.model.constructs.items.ObstacleRemovingItem;
+import src.model.constructs.items.OneHandedSword;
+import src.model.constructs.items.OneShotAreaEffectItem;
+import src.model.constructs.items.OneWayTeleportItem;
+import src.model.constructs.items.PermanentObstacleItem;
+import src.model.constructs.items.Shield;
+import src.model.constructs.items.TemporaryObstacleItem;
+import src.model.constructs.items.Trap;
+import src.model.constructs.items.TwoHandedSword;
 
 /**
  * Initializes, opens the program.

@@ -1,6 +1,6 @@
 package src.map.editor;
 
-import src.model.map.MapMapEditor_Interface;
+import src.model.MapMapEditor_Interface;
 /**
  * Interface which mapaddables implement.
  * Allows something to take any *Addable, and treat it the same. 

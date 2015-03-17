@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import src.IO_Bundle;
 import src.model.Vector2;
-import src.model.map.constructs.Item;
+import src.model.constructs.items.Item;
 
 /**
  * Abstract view class that the views inherit from.

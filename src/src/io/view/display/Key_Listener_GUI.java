@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.text.StyledDocument;
 
-import src.Function;
 import src.Key_Commands;
 import src.QueueCommandInterface;
 

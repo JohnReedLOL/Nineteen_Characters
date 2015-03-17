@@ -1,10 +1,8 @@
 package src.io.controller;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import src.Function;
 import src.Key_Commands;
 import src.QueueCommandInterface;
 import src.enumHandler;
@@ -12,11 +10,7 @@ import src.io.view.MapEditorView;
 import src.io.view.display.Display;
 import src.map.editor.MapAddable;
 import src.map.editor.MapAddableFactory;
-import src.model.map.MapMapEditor_Interface;
-import src.model.map.constructs.Item;
-import src.model.map.constructs.Monster;
-import src.model.map.constructs.OneHandedSword;
-import src.model.map.constructs.Terrain;
+import src.model.MapMapEditor_Interface;
 /**
  * The controller subclass for the mapeditor game mode
  * @author mbregg

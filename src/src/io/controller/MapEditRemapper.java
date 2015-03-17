@@ -1,6 +1,5 @@
 package src.io.controller;
 import src.Key_Commands;
-import src.Key_Commands;
 /**
  * The remapper for the mapeditor game mode
  * @author mbregg
