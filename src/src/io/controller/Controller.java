@@ -15,13 +15,14 @@ import src.io.view.display.Display;
  * @author mbregg
  *
  */
-public abstract class Controller implements QueueCommandInterface<Character> {
+public abstract class Controller // implements QueueCommandInterface<Character> 
+{
 
     private KeyRemapper remap_;
     private Viewport currentView_;
     private String userName_;
-    private ConcurrentLinkedQueue<Key_Commands> keyCommandQueue_ = new ConcurrentLinkedQueue<Key_Commands>();
-    private ConcurrentLinkedQueue<Character> characterQueue_ = new ConcurrentLinkedQueue<Character>();
+    // private ConcurrentLinkedQueue<Key_Commands> keyCommandQueue_ = new ConcurrentLinkedQueue<Key_Commands>();
+    // private ConcurrentLinkedQueue<Character> characterQueue_ = new ConcurrentLinkedQueue<Character>();
     private Thread controllerThread_ = Thread.currentThread();
     
     public void grusomelyKillTheControllerThread() {
@@ -38,6 +39,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
         remap_ = remap;
         currentView_ = view;
         userName_ = uName;
+        /*
         Display.getDisplay().addDirectCommandReceiver(new QueueCommandInterface<Key_Commands>() {
 
             @Override
@@ -53,7 +55,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
             }
 
 						//takeTurnandPrintTurn(foo);
-        });
+        });*/
         Display.getDisplay().addGameInputerHandler(this);
         Display.getDisplay().setView(currentView_);
         Display.getDisplay().printView();
@@ -71,6 +73,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
         }
     }
 
+    /*
     protected void process() {
         System.out.println("Processing!");
         while (!keyCommandQueue_.isEmpty()) {
@@ -80,7 +83,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
             takeTurnandPrintTurn(characterQueue_.remove());
         }
 
-    }
+    }*/
 
     protected Viewport getView() {
         return currentView_;
@@ -142,11 +145,14 @@ public abstract class Controller implements QueueCommandInterface<Character> {
         Display.getDisplay().printView();
     }
 
+    /*
     @Override
     public void enqueue(Character c) {
         characterQueue_.add(c);
     }
+    */
 
+    /*
     @Override
     public void sendInterrupt() {
         try {
@@ -157,6 +163,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
             e.printStackTrace();
         }
     }
+    */
 
     /**
      * Should be overridden to save the file with the name given, if no name

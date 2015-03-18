@@ -32,7 +32,8 @@ import src.model.MapUser_Interface;
  */
 public class GameController extends Controller {
 
-    private ConcurrentLinkedQueue<String> stringQueue_ = new ConcurrentLinkedQueue<String>();
+    // Causes the game to crash when you hold down move key or click on key command name
+    // private ConcurrentLinkedQueue<String> stringQueue_ = new ConcurrentLinkedQueue<String>();
 
     private final class ChatBoxMiniController implements QueueCommandInterface<String> {
 
@@ -77,8 +78,10 @@ public class GameController extends Controller {
                 Display.getDisplay().setMessage(i);
             }
         }
-        private ConcurrentLinkedQueue<Character> commandChoiceQueue_ = new ConcurrentLinkedQueue<Character>();
+        // causes the program to crash and infinite loop.
+        // private ConcurrentLinkedQueue<Character> commandChoiceQueue_ = new ConcurrentLinkedQueue<Character>();
 
+        /*
         private class outputBoxFunction implements QueueCommandInterface<Character> {
 
             @Override
@@ -93,23 +96,26 @@ public class GameController extends Controller {
 
             }
 
-        }
-        private ConcurrentLinkedQueue<String> commandQueue_ = new ConcurrentLinkedQueue<String>();
+        }*/
+        // causes the program to crash and infinite loop.
+        // private ConcurrentLinkedQueue<String> commandQueue_ = new ConcurrentLinkedQueue<String>();
 
+        /*
         @Override
         public void enqueue(String command) {
             commandQueue_.add(command);
-        }
+        }*/
 
+        /*
         @Override
         public void sendInterrupt() {
             GameController.this.sendInterrupt();
-
-        }
+        }*/
 
         /**
          * Process the input that has built up in the two queues.
          */
+        /*
         public void processQueue() {
             while (!commandQueue_.isEmpty()) {
                 String foo = commandQueue_.remove();
@@ -125,27 +131,32 @@ public class GameController extends Controller {
                 sendTextCommandAndUpdate(chatview_.getChoice(Character.getNumericValue(commandChoiceQueue_.remove())));
             }
         }
+        */
 
     }
-
+ 
     public GameController(MapUser_Interface mui, String uName) {
         super(new AvatarCreationView(), new GameRemapper(), uName);
         MapUserAble_ = mui;
         Display.getDisplay().setCommandList(HardCodedStrings.gameCommands);
+        /*
         Display.getDisplay().addDoubleClickCommandEventReceiver(new QueueCommandInterface<String>() {
 
+            
             @Override
             public void enqueue(String command) {
                 stringQueue_.add(command);
 
-            }
+            }*/
 
+            /*
             @Override
             public void sendInterrupt() {
                 GameController.this.sendInterrupt();
             }
 
         });
+        */
         takeTurnandPrintTurn('5');//For some reason need to take a empty turn for fonts to load...
         sleepLoop();
     }
@@ -277,7 +288,7 @@ public class GameController extends Controller {
         MapUserAble_.loadGame(foo);
 
     }
-
+/*
     @Override
     public void process() {
         System.out.println("Processing");
@@ -295,7 +306,8 @@ public class GameController extends Controller {
             takeTurnandPrintTurn(command);
 
         }
-    }
+    }*/
+    
     // FIELD ACCESSORS
     /**
      * Gets this UserController's user name value
