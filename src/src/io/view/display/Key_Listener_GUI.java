@@ -64,12 +64,14 @@ class Key_Listener_GUI extends javax.swing.JFrame implements WindowListener {
      *
      */
     private static final long serialVersionUID = 1L;
+    /*
     private ArrayList<QueueCommandInterface<Character>> game_inputHandlers_ = new ArrayList<QueueCommandInterface<Character>>();
     private ArrayList<QueueCommandInterface<Character>> outputbox_inputHandlers_ = new ArrayList<QueueCommandInterface<Character>>();
     private ArrayList<QueueCommandInterface<String>> inputchatbox_Handlers_ = new ArrayList<QueueCommandInterface<String>>();
     private ArrayList<QueueCommandInterface<Key_Commands>> direct_command_receivers_ = new ArrayList<QueueCommandInterface<Key_Commands>>();
     private ArrayList<QueueCommandInterface<String>> command_area_double_clicked_ = new ArrayList<QueueCommandInterface<String>>();
-
+    */
+    
     /**
      *
      * @param in What to write to the equipped box
