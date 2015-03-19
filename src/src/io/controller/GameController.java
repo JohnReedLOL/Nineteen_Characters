@@ -32,7 +32,7 @@ import src.model.MapUser_Interface;
  */
 public class GameController extends Controller {
 
-    private ConcurrentLinkedQueue<String> stringQueue_ = new ConcurrentLinkedQueue<String>();
+    private String stringQueue_ = null;
 
     private final class ChatBoxMiniController implements QueueCommandInterface<String> {
 
@@ -77,14 +77,16 @@ public class GameController extends Controller {
                 Display.getDisplay().setMessage(i);
             }
         }
-        private ConcurrentLinkedQueue<String> commandQueue_ = new ConcurrentLinkedQueue<String>();
-        private ConcurrentLinkedQueue<Character> commandChoiceQueue_ = new ConcurrentLinkedQueue<Character>();
+        //private ConcurrentLinkedQueue<String> commandQueue_ = new ConcurrentLinkedQueue<String>();
+       // private ConcurrentLinkedQueue<Character> commandChoiceQueue_ = new ConcurrentLinkedQueue<Character>();
+        private Character commandChoiceQueue_ = null;
+        private String commandQueue_ = null;
 
         private class outputBoxFunction implements QueueCommandInterface<Character> {
 
             @Override
             public void enqueue(Character command) {
-                commandChoiceQueue_.add(command);
+                commandChoiceQueue_ =(command);
 
             }
 
@@ -99,7 +101,7 @@ public class GameController extends Controller {
 
         @Override
         public void enqueue(String command) {
-            commandQueue_.add(command);
+            commandQueue_ =(command);
         }
 
         @Override
@@ -113,7 +115,7 @@ public class GameController extends Controller {
          */
         public void processQueue() {
             while (!commandQueue_.isEmpty()) {
-                String foo = commandQueue_.remove();
+                String foo = commandQueue_;
                 if (foo!= null && foo.startsWith("/")) {
                     processCommandAndDisplayOutput(foo);
                 }
@@ -123,10 +125,9 @@ public class GameController extends Controller {
                 	sendTextCommandAndUpdate(foo);
                 }
             }
-            while (!commandChoiceQueue_.isEmpty()) {
-            	Character c = commandChoiceQueue_.remove();
+            	Character c = commandChoiceQueue_;
                 sendTextCommandAndUpdate(chatview_.getChoice(Character.getNumericValue(c)));
-            }
+                commandChoiceQueue_ = null;
         }
 
     }
@@ -139,7 +140,7 @@ public class GameController extends Controller {
 
             @Override
             public void enqueue(String command) {
-                stringQueue_.add(command);
+                stringQueue_ =(command);
 
             }
 
@@ -287,7 +288,8 @@ public class GameController extends Controller {
         super.process();
         chatbox_.processQueue();
         while (!stringQueue_.isEmpty()) {
-            String foo = stringQueue_.remove();
+            String foo = stringQueue_;
+            stringQueue_ = null;
             if (foo == null) {
                 return;
             }

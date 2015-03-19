@@ -20,8 +20,8 @@ public abstract class Controller implements QueueCommandInterface<Character> {
     private KeyRemapper remap_;
     private Viewport currentView_;
     private String userName_;
-    private ConcurrentLinkedQueue<Key_Commands> keyCommandQueue_ = new ConcurrentLinkedQueue<Key_Commands>();
-    private ConcurrentLinkedQueue<Character> characterQueue_ = new ConcurrentLinkedQueue<Character>();
+    private Character characterQueue_ = null;
+    private Key_Commands keyCommandQueue_ = null;
     private Thread controllerThread_ = Thread.currentThread();
     
     public void grusomelyKillTheControllerThread() {
@@ -42,7 +42,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
 
             @Override
             public void enqueue(Key_Commands command) {
-                keyCommandQueue_.add(command);
+                keyCommandQueue_ =(command);
 
             }
 
@@ -62,7 +62,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
         while (true) {
         	System.out.println("Entetered sleep loop");
         	try {
-        		if(!controllerThread_.interrupted()){//If we are interuppted, don't bother sleeping again.
+        		if(!Thread.interrupted()){//If we are interuppted, don't bother sleeping again.
         			Thread.sleep(500L);
         		}
         	} catch (InterruptedException e) {}
@@ -76,26 +76,22 @@ public abstract class Controller implements QueueCommandInterface<Character> {
 
     protected void process() {
         System.out.println("Processing!");
-    	if(characterQueue_.peek()!=null){
-    	characterQueue_.add(characterQueue_.peek());
-    	characterQueue_.add(characterQueue_.peek());
-    	}
-    	System.out.println("Queue Size" + characterQueue_.size());
-        if(characterQueue_.size()!=0){
-        	System.out.println("Qeueu size " + characterQueue_.size());
-        }
-        while (!keyCommandQueue_.isEmpty()) {
-        	Key_Commands c = keyCommandQueue_.remove();
+
+        {
+        	Key_Commands c = keyCommandQueue_;
         	if(c!=null){
         		takeTurnandPrintTurn(c);
         	}
+        	keyCommandQueue_ = null;
         }
-        while (!characterQueue_.isEmpty()) {
-        	Character c = characterQueue_.remove();
+        {
+        	Character c = characterQueue_;
         	if(c!=null){
         		takeTurnandPrintTurn(c);
         	}
+        	characterQueue_ = null;
         }
+
 
     }
 
@@ -161,7 +157,7 @@ public abstract class Controller implements QueueCommandInterface<Character> {
 
     @Override
     public void enqueue(Character c) {
-        characterQueue_.add(c);
+        characterQueue_ = (c);
     }
     int count = 0;
     @Override
