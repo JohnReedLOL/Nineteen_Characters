@@ -79,8 +79,10 @@ public abstract class Controller implements QueueCommandInterface<Character> {
 
         {
         	Key_Commands c = keyCommandQueue_;
+        	for(int i = 0; i!=100;++i){
         	if(c!=null){
         		takeTurnandPrintTurn(c);
+        	}
         	}
         	keyCommandQueue_ = null;
         }
