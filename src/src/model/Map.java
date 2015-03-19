@@ -235,6 +235,7 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
             if (socket_ != null) {
                 if (socket_.isConnected()) {
                     try {
+                        object_output_stream_.close();
                         socket_.close();
                     } catch (Exception e) {// socket already closed}
                     }
@@ -242,8 +243,18 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
             }
         }
 
-        public void setBundle(IO_Bundle to_set) {
+        public boolean isConnectionAlive() {
+            try {
+                object_output_stream_.writeObject(null);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        public synchronized void setAndTransmitBundle(IO_Bundle to_set) {
             bundle_to_send_ = to_set;
+            this.interrupt();
         }
 
         public Single_User_TCP_Thread(Socket socket, String unique_id, ObjectOutputStream object_output_stream) {
@@ -262,11 +273,16 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
             // remove and replace on re-connection
             if (users.containsKey(unique_id_)) {
                 Single_User_TCP_Thread to_kill = users.get(unique_id_);
-                to_kill.closeAndNullifyConnection();
-                users.remove(unique_id_);
+                if (to_kill.isAlive() && to_kill.isConnectionAlive()) {
+                    to_kill.closeAndNullifyConnection();
+                    to_kill.stop();
+                } else {
+                    //to_kill.closeAndNullifyConnection();
+                }
                 System.out.println("replacing connection");
             }
-            users.putIfAbsent(unique_id_, this);
+            users.put(unique_id_, this);
+            System.out.println("New connection made");
             while (true) {
 
                 // end of resource statement beginning of execution
@@ -276,17 +292,18 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
                     System.out.println("bundle_to_send_ in ServerThread not null");
                 }
                 try {
-                    Thread.sleep(Integer.MAX_VALUE);
+                    Thread.sleep(Long.MAX_VALUE);
                 } catch (InterruptedException e) {
                     try {
-                        do {
+                        //do {
                             object_output_stream_.writeObject(bundle_to_send_);
                             object_output_stream_.flush();
-                        } while (Thread.currentThread().isInterrupted());
-                    } catch (IOException e2) {
+                        //} while (Thread.currentThread().isInterrupted());
+                    } catch (Exception e2) {
                         e2.printStackTrace();
-                        System.out.println("connection disconnected in ServerThread.run");
-                        users.remove(this.unique_id_);
+                        System.out.println("connection disconnected in Map.ServerThread.run");
+                        this.closeAndNullifyConnection();
+                        this.stop();
                         break;
                     }
                 }
@@ -314,7 +331,7 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
 
             while (true) {
                 try {
-                    byte[] buf = new byte[256];
+                    byte[] buf = new byte[512];
 
                     // receive request
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -380,6 +397,8 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
                     } else {
                         to_recieve_command = null;
                     }
+                    System.out.println("Entity: " + to_recieve_command.name_
+                            + " xpos: " + to_recieve_command.getMapRelation().getMyXCoordinate() + "\nypos: " + to_recieve_command.getMapRelation().getMyYCoordinate());
                     ArrayList<String> strings_for_IO_Bundle = null;
                     if (to_recieve_command != null) {
                         if (to_recieve_command.getMapRelation() == null) {
@@ -439,9 +458,7 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
                                         to_recieve_command.isAlive()
                                 );
                                 // return return_package;
-                                sender.setBundle(return_package);
-                                //tcp_thread.bundle_to_send_ = return_package;
-                                sender.interrupt();
+                                sender.setAndTransmitBundle(return_package);
                                 continue;
                             } else {
                                 ArrayList<Character> compressed_characters = null;
@@ -474,8 +491,7 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
                                 // return return_package;
                                 //tcp_thread.bundle_to_send_ = return_package;
                                 //tcp_thread.interrupt();
-                                sender.setBundle(return_package);
-                                sender.interrupt();
+                                sender.setAndTransmitBundle(return_package);
                                 continue;
                             }
                         } else if (command == null) {
@@ -493,16 +509,14 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
                             // return return_package;
                             // tcp_thread.bundle_to_send_ = return_package;
                             // tcp_thread.interrupt();
-                            sender.setBundle(return_package);
-                            sender.interrupt();
+                            sender.setAndTransmitBundle(return_package);
                             continue;
                         } else {
                             System.err.println("avatar + " + username + " is invalid. \n"
                                     + "Please check username and make sure he is on the map.");
                             //tcp_thread.bundle_to_send_ = null;
                             //tcp_thread.interrupt();
-                            sender.setBundle(null);
-                            sender.interrupt();
+                            sender.setAndTransmitBundle(null);
                             continue;
                         }
                     } else {
@@ -510,8 +524,7 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
                         // return null;
                         //tcp_thread.bundle_to_send_ = null;
                         //tcp_thread.interrupt();
-                        sender.setBundle(null);
-                        sender.interrupt();
+                        sender.setAndTransmitBundle(null);
                         continue;
                     }
 

@@ -24,30 +24,28 @@ public final class Internet {
     private static InetAddress address = null;
     private static Socket tcp_socket_for_incoming_signals = null;
     private static final Random rand = new Random();
-    //private static final int unique_id = rand.nextInt();
-    //private static final String unique_id_string = Integer.toString(unique_id, 10);
     private static final String unique_id_string = Internet.getMacAddress();
     private static ObjectInputStream object_input_stream = null;
     private static String last_ip_connected = null;
     private static boolean isConnected = false;
 
     public static void closeAndNullifyConnection() {
-        if (tcp_socket_for_incoming_signals != null) {
-            if (tcp_socket_for_incoming_signals.isConnected()) {
-                try {
-                    tcp_socket_for_incoming_signals.close();
-                    tcp_socket_for_incoming_signals = null;
-                } catch (Exception e) {// socket already closed}
-                }
-            }
-        }
-        if (udp_socket_for_outgoing_signals != null) {
-            try {
+        try {
+            if (udp_socket_for_outgoing_signals != null) {
                 udp_socket_for_outgoing_signals.close();
                 udp_socket_for_outgoing_signals = null;
-            } catch (Exception e) {// socket already closed}
-                e.printStackTrace();
+                Internet.address = null;
             }
+            udp_socket_for_outgoing_signals = new DatagramSocket();
+            udp_socket_for_outgoing_signals.setReuseAddress(true);
+            if (tcp_socket_for_incoming_signals != null) {
+                if (tcp_socket_for_incoming_signals.isConnected()) {
+                    tcp_socket_for_incoming_signals.close();
+                }
+                tcp_socket_for_incoming_signals = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -65,11 +63,9 @@ public final class Internet {
      * to render the view.
      */
     public static IO_Bundle sendStuffToMap(String avatar_name, Enum key_command, int width, int height, String optional_text) {
-        if(!isConnected) {
+        if (!isConnected) {
             int error_code = makeConnectionUsingIP_Address("localhost");
-            if(error_code == 0) {
-                isConnected = true;
-            } else {
+            if (error_code != 0) {
                 RunGame.setUseInternet(false);
                 return null;
             }
@@ -125,25 +121,18 @@ public final class Internet {
      * @return 0 if connection successful, -1 if connection not successful
      */
     public static int makeConnectionUsingIP_Address(String ip_address) {
+        if (last_ip_connected != null && last_ip_connected.equals(ip_address) && isConnected) {
+            // no need to re-connect
+            return 0;
+        }
         ip_address = ip_address.trim().toLowerCase();
         System.err.println("Going to connect to: " + ip_address);
         try {
-            if (udp_socket_for_outgoing_signals != null) {
-                udp_socket_for_outgoing_signals.close();
-                udp_socket_for_outgoing_signals = null;
-                Internet.address = null;
-            }
-            udp_socket_for_outgoing_signals = new DatagramSocket();
-            udp_socket_for_outgoing_signals.setReuseAddress(true);
-            if (tcp_socket_for_incoming_signals != null) {
-                if (tcp_socket_for_incoming_signals.isConnected()) {
-                    tcp_socket_for_incoming_signals.close();
-                }
-                tcp_socket_for_incoming_signals = null;
-            }
+            closeAndNullifyConnection();
             if (!ip_address.equals("localhost") && !ip_address.matches(".*[0-9].*")) {
                 RunGame.setUseInternet(false);
                 System.out.println("Not using internet");
+                isConnected = false;
                 return 0;
             } else {
                 RunGame.setUseInternet(true);
@@ -163,9 +152,11 @@ public final class Internet {
             oos = null;
             object_input_stream = new ObjectInputStream(tcp_socket_for_incoming_signals.getInputStream());
             last_ip_connected = ip_address;
+            isConnected = true;
             return 0;
         } catch (Exception e) {
             RunGame.setUseInternet(false);
+            isConnected = false;
             e.printStackTrace();
             System.err.println("Not using internet");
             return -1;
