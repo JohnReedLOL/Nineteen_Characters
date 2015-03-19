@@ -331,7 +331,7 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
 
             while (true) {
                 try {
-                    byte[] buf = new byte[256];
+                    byte[] buf = new byte[512];
 
                     // receive request
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
