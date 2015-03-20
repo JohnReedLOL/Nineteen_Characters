@@ -43,6 +43,8 @@ public class HardCodedStrings {
 			"Double click a command in the command box to use it!" + System.lineSeparator()+
 			"Type /bindings to see the key bindings"+
 			"Type in /set-control [entityname] to switch to controlling entitiy." +
+                        "Type in /set-ip [ip-address] to switch to controlling a different ip." +
+                        "Type in /set-tcp [on/off] to switch to using TCP instead of UDP." +
 			System.lineSeparator() +
 			"If no such entity exists, you will be controlling nothing."+
 			System.lineSeparator()+
@@ -63,11 +65,17 @@ public class HardCodedStrings {
 	public final static String bindingsHelp = "Type in /bindings to get a list of controls bound to keys, in the form "+
 			System.lineSeparator()+
 			"/[control]: [key]";
-	public final static String setControlHelp = "Type in /set-control [entityname] to switch to controlling entitiy." +
+        public final static String setIPHelp = "Type in /set-ip [ip-address] to switch to controlling a different ip." +
 			System.lineSeparator() +
-			"If no such entity exists, you will be controlling nothing."+
+			"If no such valid ip exists, you will be controlling localhost.";
+        public final static String setTCP = "Type in /set-tcp [yes/no] to switch to TCP or UDP." +
+			System.lineSeparator() +
+			"If no such valid ip exists, you will be controlling localhost.";
+	public final static String setControlHelp = "Type in /set-control [entityname] to switch to controlling a different ip." +
+			System.lineSeparator() +
+			"If no such ip exists, you will be controlling nothing."+
 			System.lineSeparator()+
-			"Note that attempting to control a non existent entity results in game over";
+			"Note that attempting to control a non existent ip results in controlling localhost";
 	public final static String setControlSuccess = "Succesfully set control!";
 	public final static String setControl_error = "Error, didn't give who to control!";
 

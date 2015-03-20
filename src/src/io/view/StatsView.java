@@ -8,7 +8,7 @@ package src.io.view;
 import java.util.ArrayList;
 
 import src.IO_Bundle;
-import src.model.map.constructs.PickupableItem;
+import src.model.constructs.items.PickupableItem;
 /**
  * Players see the StatsView when they are checking their stats
  * @author Matthew B, Jessan, Jack C

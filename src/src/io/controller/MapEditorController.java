@@ -1,19 +1,16 @@
 package src.io.controller;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-import src.Function;
 import src.Key_Commands;
+import src.QueueCommandInterface;
 import src.enumHandler;
 import src.io.view.MapEditorView;
 import src.io.view.display.Display;
 import src.map.editor.MapAddable;
 import src.map.editor.MapAddableFactory;
-import src.model.map.MapMapEditor_Interface;
-import src.model.map.constructs.Item;
-import src.model.map.constructs.Monster;
-import src.model.map.constructs.OneHandedSword;
-import src.model.map.constructs.Terrain;
+import src.model.MapMapEditor_Interface;
 /**
  * The controller subclass for the mapeditor game mode
  * @author mbregg
@@ -26,6 +23,9 @@ public class MapEditorController extends Controller {
 	private String setToSpawn_ = "";
 	private MapAddableFactory factory_= new MapAddableFactory();
 	private MapAddable addable = null;
+	private ConcurrentLinkedQueue<String> setToSpawnQueue_ = new ConcurrentLinkedQueue<String>();
+	private ConcurrentLinkedQueue<String> commandQueue_ = new ConcurrentLinkedQueue<String>();
+	CommandMiniController cont_ = new CommandMiniController(MapEditorController.this.getRemapper(), MapEditorController.this);
 	public MapEditorController(MapMapEditor_Interface map) {
 		super(new MapEditorView(),new MapEditRemapper(), "Temporary Name Map User");
 		super.setView(mappy_viewy_);
@@ -39,46 +39,63 @@ public class MapEditorController extends Controller {
 		Display.getDisplay().setMessage("TO USE: Hit space to spawn something. Select what to spawn by " +
 				"clicking on it in the item box. Move around as usual. Hitting space with nothing selected spawns\n" +
 				"The last thing spawned.");
-		Display.getDisplay().addDoubleClickCommandEventReceiver(new Function<Void, String>() {
+		Display.getDisplay().addDoubleClickCommandEventReceiver(new QueueCommandInterface<String>() {
+
 
 			@Override
-			public Void apply(final String foo) {
-				Thread t_ = new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if(foo == null){return;}
-						setToSpawn_ = foo;
-						setLastSpawned(setToSpawn_);
-						updateDisplay();
-						
-					}
-				});
-				t_.start();
-				return null;
+			public void enqueue(final String command) {
+				if(command!=null){
+					setToSpawnQueue_.add(command);
+				}
+			}
+
+			@Override
+			public void sendInterrupt() {
+                            System.out.println("MapEditorController.sendInterrupt() in QueueCommandInterface<String> was called");
+				MapEditorController.this.sendInterrupt();
+				
 			}
 		});
-		Display.getDisplay().addInputBoxTextEnteredFunction(new Function<Void,String>(){
-			CommandMiniController cont = new CommandMiniController(MapEditorController.this.getRemapper(), MapEditorController.this);
+		
+		Display.getDisplay().addInputBoxTextEnteredFunction(new QueueCommandInterface<String>() {
+
 			@Override
-			public Void apply(final String foo) {
-				Thread t_ = new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if(foo.startsWith("/")){Display.getDisplay().setMessage(cont.processCommand(foo));}
-						
-					}
-				});
-				t_.start();
-				return null;
+			public void enqueue(String command) {
+				commandQueue_.add(command);
+				
+			}
+
+			@Override
+			public void sendInterrupt() {
+				MapEditorController.this.sendInterrupt();
+				
 			}
 			
-
 		});
+		this.sleepLoop();
 	}
 
-
+        /**
+         * The return type is an anachronism
+         * @return false if either queue has a null entry true otherwise
+         */
+	@Override
+	protected boolean process(){
+		while(!setToSpawnQueue_.isEmpty()){
+			String foo = setToSpawnQueue_.remove();
+			if(foo == null){return false;}
+			setToSpawn_ = foo;
+			setLastSpawned(setToSpawn_);
+			updateDisplay();
+		}
+		while(!commandQueue_.isEmpty()){
+			String foo = commandQueue_.remove();
+			if(foo==null){return false;}
+			if(foo.startsWith("/")){Display.getDisplay().setMessage(cont_.processCommand(foo));}
+		}
+		super.process();
+                return true;
+	}
 	int x = 0;
 	int y = 0;
 

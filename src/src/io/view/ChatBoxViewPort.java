@@ -15,14 +15,19 @@ public class ChatBoxViewPort {
 	private int whiteSpaceCount_ = 1;
 	public ChatBoxViewPort() {
 	}
-	public void renderToDisplay(IO_Bundle bundle){
+        
+	public void renderToDisplay(ArrayList<String> strings_for_communication, boolean is_alive){
+            System.out.println("Calling ChatBoxViewPort.renderToDisplay(ArrayList<String> strings_for_communication, boolean is_alive)");
 		result_.clear();
-		if(bundle == null){result_.add("GAME OVER YOU ARE DEAD"); return;}//If null we are dead, so simply say that and do nothing else
-		if(bundle.strings_for_communication_ == null){return;}
+		if(is_alive == false){
+                    result_.add("GAME OVER YOU ARE DEAD"); 
+                    return;
+                }//If null we are dead, so simply say that and do nothing else
+		if(strings_for_communication == null){return;}
 		clear();
-		for(int i = 0; i!=bundle.strings_for_communication_ .size();++i){
+		for(int i = 0; i != strings_for_communication.size(); ++i){
 			String temp = String.valueOf(i) + ": ";
-			view_content_strings_.add(bundle.strings_for_communication_.get(i));
+			view_content_strings_.add(strings_for_communication.get(i));
 			headings_.add(temp);
 		}
 		result_ = new ArrayList<String>(headings_.size());
@@ -33,6 +38,7 @@ public class ChatBoxViewPort {
 		addWhiteSpace(result_);
 
 	}
+        
 	private void addWhiteSpace(ArrayList<String> list){
 		for(int i = 0; i!=whiteSpaceCount_;++i){list.add(System.lineSeparator());}
 	}

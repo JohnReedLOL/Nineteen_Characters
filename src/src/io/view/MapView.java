@@ -43,7 +43,6 @@ public class MapView extends Viewport {
 	 */
 	private void render(IO_Bundle bundle){
 		clear();
-		makeSquare(0, 0,this.getWidth()-1,this.getHeight()-1);
 		if(bundle.view_for_display_ == null || bundle.view_for_display_.length == 0){return;}
 		if(bundle.color_for_display_ == null || bundle.color_for_display_.length == 0){return;}
 		for(int i = 0;i<this.getWidth()-2 && i < bundle.view_for_display_[0].length;++i){

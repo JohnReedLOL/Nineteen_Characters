@@ -14,8 +14,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import src.Function;
 import src.Key_Commands;
+import src.QueueCommandInterface;
 import src.io.view.Viewport;
 
 /**
@@ -244,7 +244,7 @@ public class Display {
      * Adds a class to be called via the function interface whenever a character is typed in the main gameview.
 	 * @param foo : The class to call
      */
-    public void addGameInputerHandler(Function<Void,Character> foo){
+    public void addGameInputerHandler(QueueCommandInterface<Character> foo){
     	java.awt.EventQueue.invokeLater(new gameInputHandlerRunnable(foo));
 	}
     /** 
@@ -253,8 +253,8 @@ public class Display {
      *
      */
     private class gameInputHandlerRunnable implements Runnable{
-    	private Function<Void,Character> handler_;
-    	public gameInputHandlerRunnable(Function<Void,Character> foo) {
+    	private QueueCommandInterface<Character> handler_;
+    	public gameInputHandlerRunnable(QueueCommandInterface<Character> foo) {
 			handler_ = foo;
 		}
 		@Override
@@ -264,15 +264,15 @@ public class Display {
     	
     }
 	/**
-	 * Adds a Function<Void,String> object to the list of things called by chatbox on enter
-	 * @param Function<Void,String> listen
+	 * Adds a QueueCommandInterface<String> object to the list of things called by chatbox on enter
+	 * @param QueueCommandInterface<String> listen
 	 */
-	public void addInputBoxTextEnteredFunction(Function<Void,String> listen){
+	public void addInputBoxTextEnteredFunction(QueueCommandInterface<String> listen){
 		EventQueue.invokeLater(new inputHandlerRunnable(listen));
 	}
     private class inputHandlerRunnable implements Runnable{
-    	private Function<Void,String> handler_;
-    	public inputHandlerRunnable(Function<Void,String> foo) {
+    	private QueueCommandInterface<String> handler_;
+    	public inputHandlerRunnable(QueueCommandInterface<String> foo) {
 			handler_ = foo;
 		}
 		@Override
@@ -285,7 +285,7 @@ public class Display {
 	 * Adds something to listen for characters from the output box. 
 	 * @param receiver
 	 */
-	public void addOutputBoxCharacterFunction(Function<Void,Character> receiver){
+	public void addOutputBoxCharacterFunction(QueueCommandInterface<Character> receiver){
 		EventQueue.invokeLater(new outputBoxHandlerRunnable(receiver));
 	}
 	/**
@@ -294,8 +294,8 @@ public class Display {
 	 *
 	 */
     private class outputBoxHandlerRunnable implements Runnable{
-    	private Function<Void,Character> handler_;
-    	public outputBoxHandlerRunnable(Function<Void,Character> foo) {
+    	private QueueCommandInterface<Character> handler_;
+    	public outputBoxHandlerRunnable(QueueCommandInterface<Character> foo) {
 			handler_ = foo;
 		}
 		@Override
@@ -308,7 +308,7 @@ public class Display {
 	 * Adds a function to be triggered by direct, unremappable things, like buttons. 
 	 * @param receiver
 	 */
-	public void addDirectCommandReceiver(Function<Void,Key_Commands> receiver){
+	public void addDirectCommandReceiver(QueueCommandInterface<Key_Commands> receiver){
 		java.awt.EventQueue.invokeLater(new directHandlerRunnable(receiver));
 	}
 	 /** 
@@ -317,8 +317,8 @@ public class Display {
      *
      */
     private class directHandlerRunnable implements Runnable{
-    	private Function<Void,Key_Commands> handler_;
-    	public directHandlerRunnable(Function<Void,Key_Commands> foo) {
+    	private QueueCommandInterface<Key_Commands> handler_;
+    	public directHandlerRunnable(QueueCommandInterface<Key_Commands> foo) {
 			handler_ = foo;
 		}
 		@Override
@@ -331,13 +331,13 @@ public class Display {
      * When command is double clicked on, the function passed in will receive the highlighted string.
      * @param receiver
      */
-    public void addDoubleClickCommandEventReceiver(Function<Void,String> receiver){
+    public void addDoubleClickCommandEventReceiver(QueueCommandInterface<String> receiver){
     	java.awt.EventQueue.invokeLater(new commandHandlerRunnable(receiver));
     }
     
     private class commandHandlerRunnable implements Runnable{
-    	private Function<Void,String> handler_;
-    	public commandHandlerRunnable(Function<Void,String> foo) {
+    	private QueueCommandInterface<String> handler_;
+    	public commandHandlerRunnable(QueueCommandInterface<String> foo) {
 			handler_ = foo;
 		}
 		@Override

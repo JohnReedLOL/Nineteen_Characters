@@ -2,38 +2,31 @@ package src;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 import src.io.controller.Controller;
 import src.io.controller.GameController;
 import src.io.controller.MapEditorController;
-import src.model.map.Map;
-import src.model.map.constructs.Avatar;
-import src.model.map.constructs.Item;
-import src.model.map.constructs.KnightsSerum;
-import src.model.map.constructs.Merchant;
-import src.model.map.constructs.Monster;
-import src.model.map.constructs.ObstacleRemovingItem;
-import src.model.map.constructs.OneHandedSword;
-import src.model.map.constructs.OneShotAreaEffectItem;
-import src.model.map.constructs.OneWayTeleportItem;
-import src.model.map.constructs.PermanentObstacleItem;
-import src.model.map.constructs.Shield;
-import src.model.map.constructs.TemporaryObstacleItem;
-import src.model.map.constructs.Terrain;
-import src.model.map.constructs.Trap;
-import src.model.map.constructs.TwoHandedSword;
-import src.model.map.constructs.Villager;
+import src.model.Map;
+import src.model.constructs.Avatar;
+import src.model.constructs.Merchant;
+import src.model.constructs.Monster;
+import src.model.constructs.Terrain;
+import src.model.constructs.Villager;
+import src.model.constructs.items.Item;
+import src.model.constructs.items.KnightsSerum;
+import src.model.constructs.items.FlyingSerum;
+import src.model.constructs.items.ObstacleRemovingItem;
+import src.model.constructs.items.OneHandedSword;
+import src.model.constructs.items.OneShotAreaEffectItem;
+import src.model.constructs.items.OneWayTeleportItem;
+import src.model.constructs.items.PermanentObstacleItem;
+import src.model.constructs.items.Shield;
+import src.model.constructs.items.TemporaryObstacleItem;
+import src.model.constructs.items.Trap;
+import src.model.constructs.items.TwoHandedSword;
 
 /**
  * Initializes, opens the program.
@@ -50,35 +43,40 @@ public class RunGame {
     private static int mapHeight_ = 40;
     private static int mapWidth_ = 40;
     private static boolean map_editor_mode_ = false;
-    private static DatagramSocket udp_socket_for_outgoing_signals = null;
-    private static InetAddress address = null;
-    private final static String ip_address = "localhost";
-    private static Socket tcp_socket_for_incoming_signals = null;
-    private static Random rand = new Random();
-    private static final int unique_id = rand.nextInt();
-    private static final String unique_id_string = Integer.toString(unique_id, 10);
-    private static ObjectInputStream object_input_stream = null;
+    private static boolean use_internet = true;
+    private static boolean use_TCP = false;
+    public static final ControllerInternet internet = new ControllerInternet();
 
-    public static IO_Bundle sendStuffToMapOverTheInternet(String avatar_name, Enum key_command, int width, int height, String optional_text) {
-        try {
-            final String to_send = unique_id_string + " " + avatar_name + " "
-                    + key_command.name() + " " + width + " " + height + " " + optional_text;
-            final byte[] buf = to_send.getBytes();
-            final DatagramPacket packet = new DatagramPacket(buf, buf.length, RunGame.address, Map.UDP_PORT_NUMBER);
-            RunGame.udp_socket_for_outgoing_signals.send(packet);
-            IO_Bundle to_recieve = (IO_Bundle) object_input_stream.readObject();
-            // decompression
-            if (to_recieve.view_for_display_ == null && to_recieve.compressed_characters_ != null) {
-                to_recieve.view_for_display_ = IO_Bundle.runLengthDecodeView(width, height,
-                        to_recieve.compressed_characters_, to_recieve.character_frequencies_);
-                to_recieve.color_for_display_ = IO_Bundle.runLengthDecodeColor(width, height,
-                        to_recieve.compressed_colors_, to_recieve.color_frequencies_);
-            }
-            return to_recieve;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    public static boolean getUseInternet() {
+        return RunGame.use_internet;
+    }
+
+    public static void setUseInternet(boolean b) {
+        use_internet = b;
+    }
+    
+        public static boolean getUseTCP() {
+        return RunGame.use_TCP;
+    }
+
+    public static void setUseTCP(boolean b) {
+        use_TCP = b;
+    }
+
+    public static void grusomelyKillTheMapAndTheController() {
+        if (RunGame.map_ != null) {
+            map_.grusomelyKillTheMapThread();
+            System.out.println("Killed the map thread");
+        } else {
+            System.out.println("The map thread is null");
         }
+        if (RunGame.uc_ != null) {
+            uc_.grusomelyKillTheControllerThread();
+            System.out.println("Killed the controller thread");
+        } else {
+            System.out.println("The controller thread is null");
+        }
+        internet.closeAndNullifyConnection();
     }
 
     public static String getAvatarName() {
@@ -88,63 +86,12 @@ public class RunGame {
     public static void main(String[] args) {
         parseArgs(args); // Parse command line arguments
         handleArgs(args);
-
         if (!map_editor_mode_) {
             startNewGame();
         } else {
             startMapEditor();
         }
-        try { //InetAddress addr = InetAddress.getLocalHost();
-            udp_socket_for_outgoing_signals = new DatagramSocket();
-            address = InetAddress.getByName(ip_address);
-            tcp_socket_for_incoming_signals = new Socket();
-            tcp_socket_for_incoming_signals.setTcpNoDelay(true);
-            tcp_socket_for_incoming_signals.connect(new InetSocketAddress(ip_address, Map.TCP_PORT_NUMBER));
-            ObjectOutputStream oos = new ObjectOutputStream(tcp_socket_for_incoming_signals.getOutputStream());
-            oos.flush();
-            oos.writeObject(Integer.toString(RunGame.unique_id, 10));
-            oos.flush();
-            oos = null;
-            object_input_stream = new ObjectInputStream(tcp_socket_for_incoming_signals.getInputStream());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
-    /*
-     private static String getMacAddess() throws Exception
-     {
-        
-     //Get MAC address
-     String MAC_Username = "";
-     InetAddress ip = InetAddress.getLocalHost();
-
-     Enumeration e = NetworkInterface.getNetworkInterfaces();
-
-     while (e.hasMoreElements()) {
-
-     NetworkInterface n = (NetworkInterface) e.nextElement();
-     Enumeration<InetAddress> ee = n.getInetAddresses();
-     while (ee.hasMoreElements()) {
-     InetAddress i = (InetAddress) ee.nextElement();
-     if (!i.isLoopbackAddress() && !i.isLinkLocalAddress() && i.isSiteLocalAddress()) {
-     ip = i;
-     }
-     }
-     }
-
-     NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-     byte[] mac_byte = network.getHardwareAddress();
-
-     StringBuilder sb = new StringBuilder();
-     for (int i = 0; i < mac_byte.length; i++) {
-     sb.append(String.format("%02X%s", mac_byte[i], (i < mac_byte.length - 1) ? "-" : ""));
-     }
-     return sb.toString();
-     }
-
-     }
-     */
 
     private static int startNewGame() {
         initialize(); // Initialize any data we need to before loading
@@ -187,19 +134,21 @@ public class RunGame {
         // map_.addAsAvatar(avatar_, 0, 0);
         map_.addAsAvatar(avatar_, 0, 0);
 
-        Avatar buddy = new Avatar("buddy", '웃');
+        Avatar buddy = new Avatar("buddy", '☺');
         // map_.addAsAvatar(buddy, 3, 0);
         map_.addAsKnight(buddy, 3, 0); // buddy can jump over entities!
+        map_.addAsFlying(buddy, 4, 0); // buddy can jump over entities!
+        
 
-        Villager villager1 = new Villager("villager1", '웃');
+        Villager villager1 = new Villager("villager1", '☺');
         villager1.getStatsPack().increaseQuantityOfExperienceBy(200);
         map_.addAsEntity(villager1, 3, 13);
 
-        Monster monster = new Monster("monster1", '웃');
+        Monster monster = new Monster("monster1", '☺');
         monster.getStatsPack().increaseQuantityOfExperienceBy(300);
         map_.addAsEntity(monster, 13, 3);
 
-        Merchant merchant = new Merchant("merchant1", '웃');
+        Merchant merchant = new Merchant("merchant1", '☺');
         merchant.getStatsPack().increaseQuantityOfExperienceBy(1000);
         map_.addAsEntity(merchant, 1, 1);
         Item teleport = new OneWayTeleportItem("tele", 'T', 0, 0);
@@ -213,6 +162,10 @@ public class RunGame {
 
         KnightsSerum knight_serum = new KnightsSerum("Knight serum", 'N');
         map_.addItem(knight_serum, 18, 12);
+        
+        FlyingSerum flying_serum = new FlyingSerum("Flying Serum", 'F');
+        map_.addItem(flying_serum, 14, 12);
+        
 
         ObstacleRemovingItem key = new ObstacleRemovingItem("Key", 'K');
         TemporaryObstacleItem door = new TemporaryObstacleItem("Door", 'D', key);
@@ -290,7 +243,7 @@ public class RunGame {
         if (saveGame_ == null) {
             saveGame_ = SavedGame.newSavedGame();
         }
-        saveGame_.saveGame(map_, uc_, foo);
+        saveGame_.saveGame(map_);
     }
 
     // </editor-fold>
