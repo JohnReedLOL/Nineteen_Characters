@@ -13,8 +13,8 @@ import src.model.constructs.Entity;
  */
 public class OneWayTeleportItem extends Item {
     
-    final int x_destination_;
-    final int y_destination_;
+    int x_destination_;
+    int y_destination_;
 
     public OneWayTeleportItem(String name, char representation, int x_destination, int y_destination) {
         super(name, representation, false, true, false);
@@ -30,4 +30,14 @@ public class OneWayTeleportItem extends Item {
         Entity to_be_teleported = this.getMapRelation().getTheEntityOnTopOfMe();
         to_be_teleported.getMapRelation().teleportTo(x_destination_, x_destination_);
     }
+    /**
+     * Set where the teleporter teleports to.
+     * @param x
+     * @param y
+     */
+    public void setDestination(int x, int y){
+    	x_destination_ = x;
+    	y_destination_ = y;
+    }
+
 }

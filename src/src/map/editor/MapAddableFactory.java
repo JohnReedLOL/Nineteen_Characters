@@ -128,8 +128,8 @@ public class MapAddableFactory {
 			TemporaryObstacleItem door = new TemporaryObstacleItem("Door", 'D', key);
 			return new DoorKeyAdder(key, door);
 		case TELEPORT_ITEM:
-			Item teleport = new OneWayTeleportItem("tele", 'T', 0, 0);
-			return new ItemAdder(teleport);
+			OneWayTeleportItem teleport = new OneWayTeleportItem("tele", 'T', 0, 0);
+			return new TeleportAdder(teleport);
 		case HEAL_TRAP:
 			Trap trapHeal = new Trap("trapheal", 'b', Effect.HEAL, 2);
 			return new ItemAdder(trapHeal);
