@@ -25,6 +25,7 @@ import src.io.view.MapView;
 import src.io.view.StatsView;
 import src.io.view.Viewport;
 import src.io.view.display.Display;
+import src.model.Map;
 import src.model.MapUser_Interface;
 
 /**
@@ -33,7 +34,8 @@ import src.model.MapUser_Interface;
  * @author JohnReedLOL/mbregg
  */
 public class GameController extends Controller {
-	//Queue of the strings from clicking on the command box inthe gui.
+
+    //Queue of the strings from clicking on the command box inthe gui.
     private ConcurrentLinkedQueue<String> stringQueue_ = new ConcurrentLinkedQueue<String>();
 
     private final class ChatBoxMiniController implements QueueCommandInterface<String> {
@@ -94,7 +96,6 @@ public class GameController extends Controller {
 
             }
 
-
         }
 
         @Override
@@ -130,7 +131,8 @@ public class GameController extends Controller {
         }
 
     }
-    public void GameController_Constructor_Helper(MapUser_Interface mui, String uName){
+
+    public void GameController_Constructor_Helper(MapUser_Interface mui, String uName) {
         MapUserAble_ = mui;
         Display.getDisplay().setCommandList(HardCodedStrings.gameCommands);
         Display.getDisplay().addDoubleClickCommandEventReceiver(new QueueCommandInterface<String>() {
@@ -143,21 +145,21 @@ public class GameController extends Controller {
 
             }
 
-
         });
         views_.add(new MapView());
         views_.add(new StatsView(getUserName()));//Build our two views.
         takeTurnandPrintTurn('5');//For some reason need to take a empty turn for fonts to load...
     }
-    public GameController(MapUser_Interface mui, String uName, GameRemapper remap){
-    	super(new AvatarCreationView(),remap, uName);
-    	GameController_Constructor_Helper(mui, uName);
+
+    public GameController(Map map, String uName, GameRemapper remap) {
+        super(map, new AvatarCreationView(), remap, uName);
+        GameController_Constructor_Helper(super.getMap(), uName);
     }
-    public GameController(MapUser_Interface mui, String uName) {
-        super(new AvatarCreationView(),new GameRemapper(),uName);
-        GameController_Constructor_Helper(mui, uName);
+
+    public GameController(Map map, String uName) {
+        super(map, new AvatarCreationView(), new GameRemapper(), uName);
+        GameController_Constructor_Helper(super.getMap(), uName);
     }
- 
 
     private MapUser_Interface MapUserAble_;
 
@@ -180,11 +182,11 @@ public class GameController extends Controller {
 
     }
 
-    private IO_Bundle sendCommandToMapWithText(Key_Commands command, String in) {
+    private IO_Bundle sendCommandToMapWithText(Key_Commands command, String input) {
         if (SwingUtilities.isEventDispatchThread()) {
-            //System.err.println("GameController is running on the Swing Dispatch Thread in sendCommandToMapWithText [Bad]");
+            //System.err.println("GameController is running on the Swing Dispatch Thread input sendCommandToMapWithText [Bad]");
         } else {
-            //System.out.println("GameController is not running on the Swing Dispatch Thread in sendCommandToMapWithText [Good]");
+            //System.out.println("GameController is not running on the Swing Dispatch Thread input sendCommandToMapWithText [Good]");
         }
         if (Key_Commands.GET_INTERACTION_OPTIONS.equals(command)) {
             java.awt.EventQueue.invokeLater(new Runnable() {
@@ -196,15 +198,7 @@ public class GameController extends Controller {
         if (command == null) {
             return null;
         }
-        final IO_Bundle to_return;
-        if (RunGame.getUseInternet()) {
-            to_return = RunGame.internet.sendStuffToMap(getUserName(),
-                    command, getView().getWidth() / 2, getView().getHeight() / 2, in);
-            //System.out.println("Using internet to sendCommandToMapWithText");
-        } else {
-            to_return = MapUserAble_.sendCommandToMapWithOptionalText(getUserName(), command, getView().getWidth() / 2, getView().getHeight() / 2, in);
-            //System.out.println("Not using internet to sendCommandToMapWithText");
-        }
+        final IO_Bundle to_return = super.getMessenger().sendCommandToMap(command, input);
         // Make the buttons says the right skill names.
         if (to_return != null && to_return.occupation_ != null && command == Key_Commands.BECOME_SMASHER || command == Key_Commands.BECOME_SUMMONER
                 || command == Key_Commands.BECOME_SNEAK) {
@@ -222,7 +216,7 @@ public class GameController extends Controller {
             });
         }
         // Auto focus on chatbox
-        
+
         if ((to_return != null && to_return.strings_for_communication_ != null && !to_return.strings_for_communication_.isEmpty())
                 && (command == Key_Commands.MOVE_DOWN || command == Key_Commands.MOVE_DOWNLEFT
                 || command == Key_Commands.MOVE_DOWNRIGHT || command == Key_Commands.MOVE_LEFT
@@ -237,7 +231,7 @@ public class GameController extends Controller {
         }
         return to_return;
     }
-   
+
     private Queue<Viewport> views_ = new LinkedList<Viewport>();
 
     /**
@@ -252,20 +246,19 @@ public class GameController extends Controller {
     protected IO_Bundle updateViewsAndMap(Key_Commands input) {
         //System.out.println("Called GameController.updateViewsAndMap(Key_Commands input)");
         boolean taken = false;
-        
+
         if (Key_Commands.BECOME_SNEAK.equals(input) || Key_Commands.BECOME_SMASHER.equals(input)
-        		|| Key_Commands.BECOME_SUMMONER.equals(input)) {
-        	setView(views_.element());
-        	System.gc();
+                || Key_Commands.BECOME_SUMMONER.equals(input)) {
+            setView(views_.element());
+            System.gc();
 
         }
         if (Key_Commands.TOGGLE_VIEW.equals(input)) {
-        	views_.add(views_.remove());//Pop the last element and bring it front.
-        	setView(views_.element());
-        	System.gc();
-        	taken = true;
+            views_.add(views_.remove());//Pop the last element and bring it front.
+            setView(views_.element());
+            System.gc();
+            taken = true;
         }
-
 
         if (!taken) {
             return sendCommandToMapWithText(input, "");

@@ -16,6 +16,8 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Random;
+import src.io.controller.Controller;
+import src.io.controller.GameController;
 
 import src.model.Map;
 import src.model.MapInternet;
@@ -33,11 +35,12 @@ public final class ControllerInternet {
     private static DatagramSocket udp_socket_for_incoming_signals = null;
     private static final Random rand = new Random();
     private static final String unique_id_string = ControllerInternet.getMacAddress();
-    private static boolean isConnected = false;
     //private final String monitor_For_UDP_Sender = "";
     private final UDP_Sender_Thread sender_thread;
+    private final Controller who_I_am_providing_internet_to_;
+    private boolean is_internet_connected = false;
 
-    public ControllerInternet() {
+    public ControllerInternet(Controller who_I_am_providing_internet_to) {
         sender_thread = new UDP_Sender_Thread();
         sender_thread.start();
         try {
@@ -45,6 +48,7 @@ public final class ControllerInternet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        who_I_am_providing_internet_to_ = who_I_am_providing_internet_to;
     }
 
     private class UDP_Sender_Thread extends Thread {
@@ -89,7 +93,7 @@ public final class ControllerInternet {
     public void terminate() {
         try {
             sender_thread.interrupt(); // make the udp_sender thread commit suicide.
-            isConnected = false;
+            is_internet_connected = false;
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error while closing and nullifying connection");
@@ -110,8 +114,19 @@ public final class ControllerInternet {
      * to render the view.
      */
     public IO_Bundle sendStuffToMap(String avatar_name, Enum key_command, int width, int height, String optional_text) {
-        if (!isConnected) {
+        if(!who_I_am_providing_internet_to_.isUsingInternet()) {
+            System.err.println("Impossible exception - Controller is using internet and not using internet");
+            System.exit(-87);
+        }
+        if ( !is_internet_connected ) {
             final int error_code = makeConnectionUsingIP_Address("localhost");
+            if(error_code == 0) {
+            } else {
+                who_I_am_providing_internet_to_.tellNotToUseNetwork();
+                System.err.println("An impossible error occured in ControllerInternet.sendStuffToMap(). Could not connect to localhost");
+                System.exit(-43);
+                return null;
+            }
         }
         try {
             final String to_send = unique_id_string + " " + avatar_name + " "
@@ -134,6 +149,8 @@ public final class ControllerInternet {
                         to_recieve.compressed_characters_, to_recieve.character_frequencies_);
                 to_recieve.color_for_display_ = IO_Bundle.runLengthDecodeColor(width, height,
                         to_recieve.compressed_colors_, to_recieve.color_frequencies_);
+            } else {
+                // No Decompression
             }
             return to_recieve;
             //}
@@ -181,13 +198,11 @@ public final class ControllerInternet {
         try {
             ControllerInternet.address = InetAddress.getByName(ip_address);
         } catch (IOException e) {
-
-            e.printStackTrace();
-            isConnected = false;
-            RunGame.setUseInternet(false);
+            //e.printStackTrace();
+            is_internet_connected = false;
             return -1;
         }
-        isConnected = true;
+        is_internet_connected = true;
         return 0;
     }
 

@@ -18,6 +18,15 @@ import src.model.constructs.items.Item;
  */
 public class MapDrawableThing_Relation {
 
+    private final Map current_map_reference_;
+
+    /**
+     * Get map reference
+     */
+    protected Map getMap() {
+        return current_map_reference_;
+    }
+
     public class AreaEffect {
 
         /**
@@ -49,8 +58,10 @@ public class MapDrawableThing_Relation {
             }
         }
         private int effectDecalDuration_ = 20;
+
         /**
          * For damage coming from non-entities
+         *
          * @param x_pos - x coordinate of effect
          * @param y_pos - y coordinate of effect
          * @param strength - how much effect
@@ -62,13 +73,13 @@ public class MapDrawableThing_Relation {
                 // If there is no decal, fuck shit up
                 if (infliction.getTerrain() != null && !infliction.getTerrain().hasDecal()) {
                     if (effect == Effect.HURT) {
-                        infliction.getTerrain().addTempDecal('♨',Color.magenta,effectDecalDuration_);
+                        infliction.getTerrain().addTempDecal('♨', Color.magenta, effectDecalDuration_);
                     } else if (effect == Effect.HEAL) {
-                        infliction.getTerrain().addTempDecal('♥',Color.red,effectDecalDuration_);
+                        infliction.getTerrain().addTempDecal('♥', Color.red, effectDecalDuration_);
                     } else if (effect == Effect.LEVEL) {
-                        infliction.getTerrain().addTempDecal('↑',Color.black,effectDecalDuration_);
+                        infliction.getTerrain().addTempDecal('↑', Color.black, effectDecalDuration_);
                     } else if (effect == Effect.KILL) {
-                        infliction.getTerrain().addTempDecal('☣',Color.orange,effectDecalDuration_);
+                        infliction.getTerrain().addTempDecal('☣', Color.orange, effectDecalDuration_);
                     }
                 }
                 Entity to_effect = infliction.getEntity();
@@ -98,15 +109,6 @@ public class MapDrawableThing_Relation {
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    protected final Map current_map_reference_;
-
-    /**
-     * Get map reference
-     */
-    public Map getMap() {
-        return current_map_reference_;
     }
 
     public MapDrawableThing_Relation(Map m) {

@@ -69,7 +69,7 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
     public int dropItem() {
         Item itemToBeDropped = entity_.pullLastItemOutOfInventory();
         if (itemToBeDropped != null) {
-            current_map_reference_.addItem(itemToBeDropped,
+            super.getMap().addItem(itemToBeDropped,
                     this.getMapTile().x_, this.getMapTile().y_);
             Display.getDisplay().setMessage(
                     "Dropped item: " + itemToBeDropped.name_);
@@ -308,7 +308,7 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
     public int pickUpItemInDirection(int x, int y) {
         int error_code = -1;
         if (entity_.isAlive()) {
-            Item itemToBePickedUp = current_map_reference_.removeTopItem(x
+            Item itemToBePickedUp = super.getMap().removeTopItem(x
                     + getMyXCoordinate(), y + getMyYCoordinate());
             if (itemToBePickedUp != null) {
                 try {
@@ -359,7 +359,7 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
      * @return -1 if tile is off the map, -2 if entity does not exist
      */
     public int sendAttackToRelativePosition(int x, int y) {
-        MapTile target_tile = this.current_map_reference_.getTile(
+        MapTile target_tile = super.getMap().getTile(
                 getMyXCoordinate() + x, getMyYCoordinate() + y);
         if (target_tile != null) {
             Entity target_entity = target_tile.getEntity();
@@ -377,7 +377,7 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
     }
 
     public void removeMyselfFromTheMapCompletely() {
-        current_map_reference_.removeEntity(entity_);
+        super.getMap().removeEntity(entity_);
     }
 
     /**
@@ -389,7 +389,7 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
      * @return -1 if tile is off the map, -2 if entity does not exist
      */
     public int sendAttackToAbsolutePosition(int x, int y) {
-        MapTile target_tile = this.current_map_reference_.getTile(x, y);
+        MapTile target_tile = super.getMap().getTile(x, y);
         if (target_tile == null) {
             Entity target_entity = target_tile.getEntity();
             if (target_entity == null) {
@@ -455,49 +455,49 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
         FacingDirection f = entity_.getFacingDirection();
         switch (f) {
             case UP:
-                target_tile = current_map_reference_.getTile(x, y + 1);
+                target_tile = super.getMap().getTile(x, y + 1);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
                 break;
             case DOWN:
-                target_tile = current_map_reference_.getTile(x, y - 1);
+                target_tile = super.getMap().getTile(x, y - 1);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
                 break;
             case RIGHT:
-                target_tile = current_map_reference_.getTile(x + 1, y);
+                target_tile = super.getMap().getTile(x + 1, y);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
                 break;
             case LEFT:
-                target_tile = current_map_reference_.getTile(x - 1, y);
+                target_tile = super.getMap().getTile(x - 1, y);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
                 break;
             case UP_RIGHT:
-                target_tile = current_map_reference_.getTile(x + 1, y + 1);
+                target_tile = super.getMap().getTile(x + 1, y + 1);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
                 break;
             case UP_LEFT:
-                target_tile = current_map_reference_.getTile(x - 1, y + 1);
+                target_tile = super.getMap().getTile(x - 1, y + 1);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
                 break;
             case DOWN_RIGHT:
-                target_tile = current_map_reference_.getTile(x + 1, y - 1);
+                target_tile = super.getMap().getTile(x + 1, y - 1);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
                 break;
             case DOWN_LEFT:
-                target_tile = current_map_reference_.getTile(x - 1, y - 1);
+                target_tile = super.getMap().getTile(x - 1, y - 1);
                 if (target_tile != null) {
                     return target_tile.getEntity();
                 }
@@ -524,49 +524,49 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
         FacingDirection f = entity_.getFacingDirection();
         switch (f) {
             case UP:
-                target_tile = current_map_reference_.getTile(x, y + 1);
+                target_tile = super.getMap().getTile(x, y + 1);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
                 break;
             case DOWN:
-                target_tile = current_map_reference_.getTile(x, y - 1);
+                target_tile = super.getMap().getTile(x, y - 1);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
                 break;
             case RIGHT:
-                target_tile = current_map_reference_.getTile(x + 1, y);
+                target_tile = super.getMap().getTile(x + 1, y);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
                 break;
             case LEFT:
-                target_tile = current_map_reference_.getTile(x - 1, y);
+                target_tile = super.getMap().getTile(x - 1, y);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
                 break;
             case UP_RIGHT:
-                target_tile = current_map_reference_.getTile(x + 1, y + 1);
+                target_tile = super.getMap().getTile(x + 1, y + 1);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
                 break;
             case UP_LEFT:
-                target_tile = current_map_reference_.getTile(x - 1, y + 1);
+                target_tile = super.getMap().getTile(x - 1, y + 1);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
                 break;
             case DOWN_RIGHT:
-                target_tile = current_map_reference_.getTile(x + 1, y - 1);
+                target_tile = super.getMap().getTile(x + 1, y - 1);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
                 break;
             case DOWN_LEFT:
-                target_tile = current_map_reference_.getTile(x - 1, y - 1);
+                target_tile = super.getMap().getTile(x - 1, y - 1);
                 if (target_tile != null) {
                     return target_tile.viewTopItem();
                 }
@@ -590,8 +590,8 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
     public Trap checkForTrap(int x, int y) {
         Trap trap = null;
         try {
-            if (current_map_reference_.getTile(x, y).viewTopItem() instanceof Trap) {
-                trap = (Trap) current_map_reference_.getTile(x, y)
+            if (super.getMap().getTile(x, y).viewTopItem() instanceof Trap) {
+                trap = (Trap) super.getMap().getTile(x, y)
                         .viewTopItem();
             }
         } catch (NullPointerException e) {
@@ -610,14 +610,14 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
      * invalid, -4 if destination is impassable
      */
     public int teleportTo(int new_x, int new_y) {
-        MapTile destination = current_map_reference_.getTile(new_x, new_y);
+        MapTile destination = super.getMap().getTile(new_x, new_y);
         if (destination != null) {
             int old_x = this.getMyXCoordinate();
             int old_y = this.getMyYCoordinate();
-            current_map_reference_.getTile(old_x, old_y).removeEntity();
+            super.getMap().getTile(old_x, old_y).removeEntity();
             if (destination.isPassable() == false) { // put the entity back in
                 // its place
-                current_map_reference_.getTile(old_x, old_y).addEntity(entity_);
+                super.getMap().getTile(old_x, old_y).addEntity(entity_);
                 return -4;
             } else { // move the entity
                 int error_code = destination.addEntity(entity_);
@@ -655,7 +655,7 @@ public class MapEntity_Relation extends MapDrawableThing_Relation {
          */
         @Override
         public void repeat(int x_pos, int y_pos, int strength, Effect effect) {
-            MapTile infliction = current_map_reference_.getTile(x_pos, y_pos);
+            MapTile infliction = getMap().getTile(x_pos, y_pos);
             if (infliction != null) {
                 // If there is no decal, fuck shit up
                 if (infliction.getTerrain() != null

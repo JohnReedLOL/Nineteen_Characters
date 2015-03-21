@@ -33,11 +33,11 @@ public class MapItem_Relation extends MapDrawableThing_Relation {
      * invalid, -4 if destination is impassable
      */
     public int teleportTo(int new_x, int new_y) {
-        MapTile destination = current_map_reference_.getTile(new_x, new_y);
+        MapTile destination = super.getMap().getTile(new_x, new_y);
         if (destination != null) {
             int old_x = this.getMyXCoordinate();
             int old_y = this.getMyYCoordinate();
-            current_map_reference_.getTile(old_x, old_y).removeSpecificItem(item_);
+            super.getMap().getTile(old_x, old_y).removeSpecificItem(item_);
             if (destination.isPassable() != false) { // move the entity
                 int error_code = destination.addItem(item_);
                 Item landed_on_item = destination.viewTopItem();
@@ -46,7 +46,7 @@ public class MapItem_Relation extends MapDrawableThing_Relation {
                 }
                 return error_code;
             } else { // put the entity back in its place
-                current_map_reference_.getTile(old_x, old_y).addItem(item_);
+                super.getMap().getTile(old_x, old_y).addItem(item_);
                 return -4;
             }
         } else {

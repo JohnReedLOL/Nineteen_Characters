@@ -45,10 +45,17 @@ public class Map implements MapMapEditor_Interface, MapUser_Interface {
     private MapTile map_grid_[][];
     private MapInternet my_internet_;
 
+    public void disableFramCompressionInMap() {
+        my_internet_.disableFrameCompression();
+    }
+
+    public void enableFramCompressionInMap() {
+        my_internet_.enableFrameCompression();
+    }
+
     //</editor-fold>
     //<editor-fold desc="Constructors" defaultstate="collapsed">
     // This should never get called
-
     @SuppressWarnings("unused")
     private Map() {
         height_ = 0;

@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import src.*;
 import src.io.view.Viewport;
 import src.io.view.display.Display;
+import src.model.Map;
 
 /**
  * Abstract controller class
@@ -23,6 +24,13 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
     //The queue of keyboard input in the main game. 
     private ConcurrentLinkedQueue<Character> characterQueue_ = new ConcurrentLinkedQueue<Character>();
     // private Thread controllerThread_ = Thread.currentThread(); Bad because constructor could be called by another thread.
+    private final ControllerInternet internet = new ControllerInternet(this);
+
+    private Map map_;
+
+    protected Map getMap() {
+        return map_;
+    }
 
     public void grusomelyKillTheControllerThread() {
         if (Thread.currentThread() == null) {
@@ -36,7 +44,8 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
         userName_ = in;
     }
 
-    public Controller(Viewport view, KeyRemapper remap, String uName) {
+    public Controller(Map map, Viewport view, KeyRemapper remap, String uName) {
+        map_ = map;
         remap_ = remap;
         currentView_ = view;
         userName_ = uName;
@@ -60,7 +69,7 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
 
     protected void sleepLoop() {
 
-        while ( !Thread.currentThread().isInterrupted() ) {
+        while (!Thread.currentThread().isInterrupted()) {
             //System.out.println("Entetered sleep loop");
             try {
                 //if(!controllerThread_.interrupted()){//If we are interuppted, don't bother sleeping again.
@@ -68,7 +77,7 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
                 process();
                 //}
             } catch (InterruptedException e) {
-               break;
+                break;
             }
             //System.out.println("Exited sleep loop"); //Exited
         }
@@ -164,7 +173,6 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
         characterQueue_.add(c);
     }
 
-
     /**
      * Should be overridden to save the file with the name given, if no name
      * given, save with date.
@@ -186,7 +194,104 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
 
     public void loadKeys(String filepath) {
         HashMap<Character, Key_Commands> newmap = SavedGame.loadKeymap(filepath);
-        if (newmap != null)
+        if (newmap != null) {
             remap_.setMap(newmap);
+        }
+    }
+
+    /**
+     * This class is used as a replacement for method references pre-Java-8
+     */
+    protected abstract class Functor {
+
+        abstract public IO_Bundle sendCommandToMap(Key_Commands command, String input);
+    }
+
+    private final sendCommandToMapViaLocalReferance sendCommandViaLocalReferance_Functor_ = new sendCommandToMapViaLocalReferance();
+
+    /**
+     * Private functor [method reference] used to send commands to the map using
+     * a local reference.
+     *
+     * @author John-Michael Reed
+     */
+    private class sendCommandToMapViaLocalReferance extends Functor {
+
+        /**
+         * @author John-Michael Reed
+         * @param command - key_command that map interprets and executes.
+         * @param input - Optional [if non-empty String] parameter used for
+         * sending chat communication to the map.
+         * @return reply from map
+         */
+        @Override
+        public IO_Bundle sendCommandToMap(Key_Commands command, String input) {
+            return map_.sendCommandToMapWithOptionalText(getUserName(), command,
+                    getView().getWidth() / 2, getView().getHeight() / 2, input);
+        }
+    }
+    private final sendCommandToMapViaNetwork sendCommandViaNetwork_Functor_ = new sendCommandToMapViaNetwork();
+
+    private Functor message_deliverer_ = sendCommandViaNetwork_Functor_;
+
+    /**
+     * Returns the functor responsible for relaying signals to maps.
+     *
+     * @return
+     */
+    protected Functor getMessenger() {
+        return message_deliverer_;
+    }
+
+    /**
+     * 
+     * @param ip
+     * @return -1 if ip is invalid, 0 if ip is valid.
+     */
+    public int setNetworkIPTo(String ip) {
+        int error_code = internet.makeConnectionUsingIP_Address(ip);
+        return error_code;
+    }
+    
+    public boolean isUsingInternet() {
+        if(message_deliverer_ == sendCommandViaNetwork_Functor_) {
+            return true;
+        } else if(message_deliverer_ == sendCommandViaLocalReferance_Functor_) {
+            return false;
+        } else {
+            System.err.println("Impossible error in Controller.is_using_internet()");
+            System.exit(65);
+            return false;
+        }
+    }
+
+    public void tellToUseNetwork() {
+        message_deliverer_ = sendCommandViaNetwork_Functor_;
+    }
+
+    public void tellNotToUseNetwork() {
+        message_deliverer_ = sendCommandViaLocalReferance_Functor_;
+    }
+
+    /**
+     * Private functor [method reference] used to send commands to the map using
+     * UDP.
+     *
+     * @author John-Michael Reed
+     */
+    private class sendCommandToMapViaNetwork extends Functor {
+
+        /**
+         * @author John-Michael Reed
+         * @param command - key_command that map interprets and executes.
+         * @param input - Optional [if non-empty String] parameter used for
+         * sending chat communication to the map.
+         * @return reply from map
+         */
+        @Override
+        public IO_Bundle sendCommandToMap(Key_Commands command, String input) {
+            return internet.sendStuffToMap(getUserName(), command,
+                    getView().getWidth() / 2, getView().getHeight() / 2, input);
+        }
     }
 }

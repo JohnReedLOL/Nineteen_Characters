@@ -45,17 +45,7 @@ public class RunGame {
     private static int mapHeight_ = 20;
     private static int mapWidth_ = 35;
     private static boolean map_editor_mode_ = false;
-    private static boolean use_internet = true;
-    // private static boolean use_TCP = false;
-    public static final ControllerInternet internet = new ControllerInternet();
 
-    public static boolean getUseInternet() {
-        return RunGame.use_internet;
-    }
-
-    public static void setUseInternet(boolean b) {
-        use_internet = b;
-    }
     /*
      public static boolean getUseTCP() {
      return RunGame.use_TCP;
@@ -78,7 +68,6 @@ public class RunGame {
         } else {
             System.out.println("The controller thread is null");
         }
-        internet.terminate();
     }
 
     public static String getAvatarName() {

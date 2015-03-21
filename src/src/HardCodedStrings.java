@@ -44,7 +44,7 @@ public class HardCodedStrings {
 			"Type /bindings to see the key bindings"+
 			"Type in /set-control [entityname] to switch to controlling entitiy." +
                         "Type in /set-ip [ip-address] to switch to controlling a different ip." +
-                        "Type in /set-tcp [on/off] to switch to using TCP instead of UDP." +
+                        "Type in /set-compression [on/off] to switch to enable or disable frame compression." +
 			System.lineSeparator() +
 			"If no such entity exists, you will be controlling nothing."+
 			System.lineSeparator()+
@@ -76,6 +76,7 @@ public class HardCodedStrings {
 			"If no such ip exists, you will be controlling nothing."+
 			System.lineSeparator()+
 			"Note that attempting to control a non existent ip results in controlling localhost";
+        public final static String setCompressionHelp = "Type in /set-compressuib [on/off] to switch to enable/disable frame compression.";
 	public final static String setControlSuccess = "Succesfully set control!";
 	public final static String setControl_error = "Error, didn't give who to control!";
 

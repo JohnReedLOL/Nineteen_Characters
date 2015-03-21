@@ -10,6 +10,7 @@ import src.io.view.MapEditorView;
 import src.io.view.display.Display;
 import src.map.editor.MapAddable;
 import src.map.editor.MapAddableFactory;
+import src.model.Map;
 import src.model.MapMapEditor_Interface;
 /**
  * The controller subclass for the mapeditor game mode
@@ -28,10 +29,10 @@ public class MapEditorController extends Controller implements Runnable {
 	//Queue of commands entered into chatbox.
 	private ConcurrentLinkedQueue<String> commandQueue_ = new ConcurrentLinkedQueue<String>();
 	CommandMiniController cont_ = new CommandMiniController(MapEditorController.this.getRemapper(), MapEditorController.this);
-	public MapEditorController(MapMapEditor_Interface map) {
-		super(new MapEditorView(),new MapEditRemapper(), "Temporary Name Map User");
+	public MapEditorController(Map map) {
+		super(map, new MapEditorView(),new MapEditRemapper(), "Temporary Name Map User");
 		super.setView(mappy_viewy_);
-		map_ = map;
+		map_ = super.getMap();
 
 
 		spawnables_.add(enumHandler.getAllAddables());

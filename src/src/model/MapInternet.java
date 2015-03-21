@@ -36,6 +36,16 @@ public class MapInternet extends Thread {
     private ConcurrentHashMap<String, Packet_Sender> users = new ConcurrentHashMap<>();
     //private final TCP_Connection_Maker connection_initiator = new TCP_Connection_Maker();
     private final Map my_owner_;
+    private int frame_number = 0;
+    private boolean is_using_compression = true;
+
+    public void enableFrameCompression() {
+        is_using_compression = true;
+    }
+
+    public void disableFrameCompression() {
+        is_using_compression = false;
+    }
     //</editor-fold>
     //<editor-fold desc="Constructors" defaultstate="collapsed">
 
@@ -158,30 +168,39 @@ public class MapInternet extends Thread {
             }
             ArrayList<Character> compressed_characters = null;
             ArrayList<Short> character_frequencies = null;
-            char[][] view = null;
+
             ArrayList<Color> compressed_colors = null;
             ArrayList<Short> color_frequencies = null;
-            /*Color[][] colors = makeColors(to_recieve_command.getMapRelation().getMyXCoordinate(),
-             to_recieve_command.getMapRelation().getMyYCoordinate(),
-             width_from_center, height_from_center);*/
+
+            char[][] view = null;
             Color[][] colors = null;
             if (to_recieve_command.isAlive() && command != null) {
-                compressed_characters = new ArrayList<>();
-                character_frequencies = new ArrayList<>();
-                compressed_colors = new ArrayList<>();
-                color_frequencies = new ArrayList<>();
-                my_owner_.runLengthEncodeColors(to_recieve_command.getMapRelation().getMyXCoordinate(),
-                        to_recieve_command.getMapRelation().getMyYCoordinate(),
-                        width_from_center, height_from_center, compressed_colors, color_frequencies);
 
-                // compressed_characters and character_frequencies are pass by referance outputs
-                my_owner_.runLengthEncodeView(to_recieve_command.getMapRelation().getMyXCoordinate(),
-                        to_recieve_command.getMapRelation().getMyYCoordinate(),
-                        width_from_center, height_from_center, compressed_characters, character_frequencies);
+                if (!is_using_compression) {
+                    view = my_owner_.makeView(to_recieve_command.getMapRelation().getMyXCoordinate(),
+                            to_recieve_command.getMapRelation().getMyYCoordinate(), width_from_center, height_from_center);
 
-                if (compressed_characters == null || character_frequencies == null || compressed_characters.isEmpty()) {
-                    RunGame.errOut("Bad - compression produced no encodings");
-                    System.exit(-4);
+                    colors = my_owner_.makeColors(to_recieve_command.getMapRelation().getMyXCoordinate(),
+                            to_recieve_command.getMapRelation().getMyYCoordinate(),
+                            width_from_center, height_from_center);
+                } else {
+                    compressed_characters = new ArrayList<>();
+                    character_frequencies = new ArrayList<>();
+                    compressed_colors = new ArrayList<>();
+                    color_frequencies = new ArrayList<>();
+                    my_owner_.runLengthEncodeColors(to_recieve_command.getMapRelation().getMyXCoordinate(),
+                            to_recieve_command.getMapRelation().getMyYCoordinate(),
+                            width_from_center, height_from_center, compressed_colors, color_frequencies);
+
+                    // compressed_characters and character_frequencies are pass by referance outputs
+                    my_owner_.runLengthEncodeView(to_recieve_command.getMapRelation().getMyXCoordinate(),
+                            to_recieve_command.getMapRelation().getMyYCoordinate(),
+                            width_from_center, height_from_center, compressed_characters, character_frequencies);
+
+                    if (compressed_characters == null || character_frequencies == null || compressed_characters.isEmpty()) {
+                        RunGame.errOut("Bad - compression produced no encodings");
+                        System.exit(-4);
+                    }
                 }
             }
 
@@ -241,7 +260,6 @@ public class MapInternet extends Thread {
         }
 
         //private volatile boolean is_notified = false;
-
         public synchronized void setBundleAvatarAndInterrupt(Entity e, IO_Bundle to_set) {
             bundle_to_send_ = to_set;
             last_controlled = e;
@@ -268,6 +286,15 @@ public class MapInternet extends Thread {
                     //is_notified = false;
                 }
                 byte[] to_send = ControllerInternet.bundleToBytes(bundle_to_send_);
+                if (frame_number % 32 == 0) {
+                    if(is_using_compression) {
+                        System.out.print("With compression, ");
+                    } else {
+                        System.out.print("Without compression, ");
+                    }
+                    System.out.println("number of bytes sent = " + to_send.length);
+                }
+                ++frame_number;
                 DatagramPacket packet_to_send = new DatagramPacket(
                         to_send, to_send.length, address_, UDP_PORT_NUMBER_FOR_MAP_SENDING_AND_CLIENT_RECIEVING);
                 try {
