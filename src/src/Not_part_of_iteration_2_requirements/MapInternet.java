@@ -66,22 +66,13 @@ public class MapInternet extends Thread {
     //<editor-fold desc="MapInternet Methods" defaultstate="collapsed">
     @Override
     public void run() {
-        while (!this.isInterrupted()) {
             this.getInputForMap();
-        }
-        //cleanup
-        //connection_initiator.interrupt();
-        for (ConcurrentHashMap.Entry<String, Packet_Sender> entry : this.users.entrySet()) {
-            if (entry.getValue() != null) {
-                entry.getValue().interrupt();
-            }
-        }
     }
 
-    private void getInputForMap() {
+    private synchronized void getInputForMap() {
 
         //RunGame.dbgOut("Incoming UDP thread is running in Map.GetMapInputFromUsers.run()", 2);
-        while (true) {
+        while (!this.isInterrupted()) {
             try {
                 byte[] buf = new byte[256];
 
@@ -149,6 +140,14 @@ public class MapInternet extends Thread {
                 continue;
             }
         }
+        // kill all threads and cleanup
+        for (ConcurrentHashMap.Entry<String, Packet_Sender> entry : this.users.entrySet()) {
+            if (entry.getValue() != null) {
+                entry.getValue().interrupt();
+            }
+        }
+        System.out.println("Map IO threads terminating");
+        return;
     }
 
     private void sendToClient(Entity to_recieve_command, Key_Commands command,
