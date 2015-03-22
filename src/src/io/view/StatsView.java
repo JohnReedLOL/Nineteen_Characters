@@ -5,6 +5,7 @@
  */
 
 package src.io.view;
+import java.awt.Color;
 import java.util.ArrayList;
 
 import src.IO_Bundle;
@@ -17,29 +18,36 @@ public final class StatsView extends Viewport
 {
     // Converts the class name into a base 35 numbers
 	
-    @SuppressWarnings("unused")
-	private char[][] view_contents_;
 
     private ArrayList<String> template_;    
     private boolean display_index = false;
     private String userName_;
     private final String tab = "  ";
+    private Viewport minimap_ = new MapView(this.getHeight(),this.getWidth());
     
     /**
      * Generates a new StatsView using the avatar_reference.
      */
     public StatsView(String _uName) {
-    	super(40, 80);
+    	super(40, 100);
     	userName_ = _uName;
-    	view_contents_= new char[this.getWidth()][this.getHeight()];
 		template_ = getAsciiArtFromFile("ASCIIART/statsview.txt");
 	}
     
 	@Override
 	public void renderToDisplayInternally(IO_Bundle bundle) {
+		minimap_.renderToDisplay(bundle);
 		renderArray(bundle);
 		populateEquipped(bundle);
 		populateItems(bundle);
+		char[][] minimapcontents_ = minimap_.getCharContents();
+		Color[][] minimapcolorcontents_ = minimap_.getColorContents();
+		for(int x = 81, xx = minimap_.getWidth()/2 - (this.getWidth()-80)/2; x< this.getWidth()&& xx < minimapcontents_.length;++x,++xx){
+			for(int y =this.getHeight()/2 , yy = minimap_.getHeight()/2-this.getHeight()/4; y< this.getHeight()&& yy < minimapcontents_[xx].length; ++y,++yy){
+				this.getCharContents()[x][y] = minimapcontents_[xx][yy];
+				this.getColorContents()[x][y] = minimapcolorcontents_[xx][yy];
+			}
+		}
 	}
 	/*
 	 * Helper method to handle bulk of rendering, keeps renderToDisplay pure

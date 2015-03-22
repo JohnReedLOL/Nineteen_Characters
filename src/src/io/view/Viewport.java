@@ -43,6 +43,9 @@ public abstract class Viewport {
 		width_ = width;
 		view_contents_ = new char[width_][height_];
 		color_contents_ = new Color[width_][height_];
+		if(game_over_ == null){
+			game_over_ = getAsciiArtFromFile("ASCIIART/gameover.txt");
+		}
 	}
 	    
 	/**

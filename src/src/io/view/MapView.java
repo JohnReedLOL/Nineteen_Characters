@@ -38,6 +38,16 @@ public class MapView extends Viewport {
 		view_contents_ = getCharContents();	
 		color_contents_ = getColorContents();
 	}
+	/**
+	 * MapView with customizable size.
+	 * @param x
+	 * @param y
+	 */
+	public MapView(int x, int y){
+		super(x,y);
+		view_contents_ = getCharContents();	
+		color_contents_ = getColorContents();
+	}
 	/*
 	 * Helper method to keep renderToDisplay pure
 	 */
