@@ -12,7 +12,12 @@ import src.model.constructs.items.SpreadingLineAreaEffectItem;
 
 public class SummonerRookie extends Summoner implements Serializable {
 
-    public int getID() { return 24; }
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8329296541718878234L;
+
+	public int getID() { return 24; }
 
     public SummonerRookie(Entity e) {
         super(e);

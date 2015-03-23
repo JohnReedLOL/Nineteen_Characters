@@ -20,6 +20,10 @@ import src.model.constructs.items.TwoHandedWeapon;
  */
 public abstract class Summoner extends Occupation implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3945557609917995530L;
 	protected int boon_timer_ = 0; //Timer for temporary boon skill.
     protected transient EntityStatsPack boon_stats_ = null;
     

@@ -20,7 +20,12 @@ import src.model.constructs.items.TwoHandedWeapon;
  */
 public abstract class Occupation implements Serializable {
 
-    public abstract int getID();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2086516563765800198L;
+
+	public abstract int getID();
 
 	/**
 	 * The character that represents this occupation.
