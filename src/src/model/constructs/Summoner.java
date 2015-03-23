@@ -5,6 +5,7 @@
  */
 package src.model.constructs;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import src.Effect;
@@ -17,10 +18,10 @@ import src.model.constructs.items.TwoHandedWeapon;
 /**
  * Summoner Occupation, intellect +1.
  */
-public abstract class Summoner extends Occupation {
+public abstract class Summoner extends Occupation implements Serializable {
 
 	protected int boon_timer_ = 0; //Timer for temporary boon skill.
-    protected EntityStatsPack boon_stats_ = null;
+    protected transient EntityStatsPack boon_stats_ = null;
     
     public Summoner(Entity e) {
         super(e);
