@@ -15,7 +15,9 @@ import src.HardCodedStrings;
  */
 public class Villager extends Entity {
 
-    public int getID() { return 17; }
+    private static final long serialVersionUID = 17L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public Villager(String name, char representation) {
         super(name, representation);

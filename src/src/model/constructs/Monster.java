@@ -15,7 +15,9 @@ import src.HardCodedStrings;
  */
 public class Monster extends Entity {
 
-    public int getID() { return 15; }
+    private static final long serialVersionUID = 15L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public Monster(String name, char representation) {
         super(name, representation);

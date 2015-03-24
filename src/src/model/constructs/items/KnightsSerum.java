@@ -5,7 +5,9 @@ import src.model.constructs.Entity;
 
 public class KnightsSerum extends PickupableItem {
 
-    public int getID() { return 4; }
+    private static final long serialVersionUID = 4L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public KnightsSerum(String name, char representation) {
         super(name, representation);

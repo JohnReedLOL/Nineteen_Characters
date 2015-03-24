@@ -16,7 +16,9 @@ import src.model.constructs.Entity;
  */
 public class TemporaryObstacleItem extends ObstacleItem {
 
-    public int getID() { return 12; }
+    private static final long serialVersionUID = 12L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     private ObstacleRemovingItem keyItem_;
 

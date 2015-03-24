@@ -19,8 +19,9 @@ import src.model.constructs.items.Staff;
  */
 public class Merchant extends Villager {
 
+    private static final long serialVersionUID = 18L;
     @Override
-    public int getID() { return 18; }
+    public int getID() { return (int)serialVersionUID; }
 
     public Merchant(String name, char representation) {
         super(name, representation);

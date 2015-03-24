@@ -3,7 +3,9 @@ package src.model.constructs.items;
 import src.Effect;
 
 public class Trap extends OneShotAreaEffectItem {
-    public int getID() { return 6; }
+    private static final long serialVersionUID = 6L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
 	/**
 	 * 

@@ -14,7 +14,9 @@ import src.Effect;
  */
 public class OneShotAreaEffectItem extends Item {
 
-    public int getID() { return 11; }
+    private static final long serialVersionUID = 11L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     private Effect effect_;
 

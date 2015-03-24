@@ -6,7 +6,9 @@ import src.Effect;
 
 public class SpreadingCircleAreaEffectItem extends Item {
 
-    public int getID() { return 20; }
+    private static final long serialVersionUID = 20L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 	
 	int current_size_ = 0;
 	int max_size_;

@@ -17,7 +17,9 @@ import src.model.constructs.items.TwoHandedWeapon;
  */
 public final class Smasher extends Occupation {
 
-    public int getID() { return 22; }
+    private static final long serialVersionUID = 22L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public Smasher(Entity e) {
         super(e);

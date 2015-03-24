@@ -15,7 +15,9 @@ import src.model.MapTerrain_Relation;
  */
 public class Terrain extends DrawableThing {
 
-    public int getID() { return 1; }
+    private static final long serialVersionUID = 1L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     void activate() {
 

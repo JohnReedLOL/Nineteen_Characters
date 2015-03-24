@@ -17,7 +17,9 @@ import src.HardCodedStrings;
  */
 public final class Avatar extends Entity {
 
-    public int getID() { return 16; }
+    private static final long serialVersionUID = 16L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public Avatar(String name, char representation) {
         super(name, representation);

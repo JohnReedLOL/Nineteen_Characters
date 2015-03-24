@@ -13,7 +13,9 @@ import java.io.Serializable;
  */
 public class Staff extends OneHandedWeapon implements Serializable {
 
-    public int getID() { return 7; }
+    private static final long serialVersionUID = 7L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public Staff(String name, char representation) {
         super(name, representation);

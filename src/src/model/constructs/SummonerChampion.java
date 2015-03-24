@@ -12,7 +12,9 @@ import src.model.constructs.items.SpreadingLineAreaEffectItem;
 
 public class SummonerChampion extends Summoner implements Serializable {
 
-    public int getID() { return 25; }
+    private static final long serialVersionUID = 25L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public SummonerChampion(Entity e) {
         super(e);

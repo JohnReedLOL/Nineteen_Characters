@@ -12,7 +12,9 @@ import java.io.Serializable;
  * @author JohnReedLOL
  */
 public class Bow extends TwoHandedWeapon implements Serializable {
-    public int getID() { return 2; }
+    private static final long serialVersionUID = 2L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public Bow(String name, char representation) {
         super(name, representation);

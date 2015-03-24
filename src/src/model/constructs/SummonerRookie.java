@@ -15,9 +15,11 @@ public class SummonerRookie extends Summoner implements Serializable {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -8329296541718878234L;
+	//private static final long serialVersionUID = -8329296541718878234L;
 
-	public int getID() { return 24; }
+	private static final long serialVersionUID = 24L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public SummonerRookie(Entity e) {
         super(e);

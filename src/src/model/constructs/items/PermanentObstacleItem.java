@@ -11,7 +11,9 @@ package src.model.constructs.items;
  */
 public class PermanentObstacleItem extends ObstacleItem {
 
-    public int getID() { return 14; }
+    private static final long serialVersionUID = 14L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public PermanentObstacleItem(String name, char representation) {
         super(name, representation);

@@ -7,7 +7,9 @@ import src.FacingDirection;
 
 public class SpreadingConeAreaEffectItem extends Item {
 
-    public int getID() { return 21; }
+    private static final long serialVersionUID = 21L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 	
 	int current_size_ = 0;
 	int max_size_;

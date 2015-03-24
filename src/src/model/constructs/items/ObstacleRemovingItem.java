@@ -11,7 +11,9 @@ package src.model.constructs.items;
  */
 public class ObstacleRemovingItem extends PickupableItem {
 
-    public int getID() { return 13; }
+    private static final long serialVersionUID = 13L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public ObstacleRemovingItem(String name, char representation) {
         super(name, representation);

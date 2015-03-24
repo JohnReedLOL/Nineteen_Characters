@@ -22,7 +22,9 @@ import src.model.constructs.items.TwoHandedWeapon;
  */
 public final class Sneak extends Occupation {
 
-    public int getID() { return 23; }
+    private static final long serialVersionUID = 23L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public Sneak(Entity e) {
         super(e);

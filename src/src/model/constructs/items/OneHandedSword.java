@@ -15,7 +15,9 @@ import src.model.constructs.DrawableThingStatsPack;
  */
 public class OneHandedSword extends OneHandedWeapon implements Serializable {
 
-    public int getID() { return 9; }
+    private static final long serialVersionUID = 9L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public OneHandedSword(String name, char representation) {
         super(name, representation);

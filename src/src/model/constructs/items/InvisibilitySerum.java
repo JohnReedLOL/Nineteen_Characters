@@ -4,7 +4,9 @@ import src.model.constructs.Entity;
 
 public class InvisibilitySerum extends PickupableItem {
 
-    public int getID() { return 3; }
+    private static final long serialVersionUID = 3L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 
     public InvisibilitySerum(String name, char representation) {
         super(name, representation);

@@ -7,7 +7,9 @@ import src.FacingDirection;
 
 public class SpreadingLineAreaEffectItem extends Item {
 
-    public int getID() { return 19; }
+    private static final long serialVersionUID = 19L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
 	
 	int current_size_ = 1;
 	int max_size_;

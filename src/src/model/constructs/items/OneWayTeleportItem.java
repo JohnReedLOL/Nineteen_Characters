@@ -13,7 +13,9 @@ import src.model.constructs.Entity;
  */
 public class OneWayTeleportItem extends Item {
 
-    public int getID() { return 10; }
+    private static final long serialVersionUID = 10L;
+    @Override
+    public int getID() { return (int)serialVersionUID; }
     
     int x_destination_;
     int y_destination_;
