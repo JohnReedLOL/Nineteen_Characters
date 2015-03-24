@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.PatternSyntaxException;
 import src.IO_Bundle;
@@ -79,7 +80,10 @@ public class MapInternet extends Thread {
         }
         this.stop();
     }
-
+    
+    // Generates fake packet loss to mimic real packet loss in long distance internet connection
+    final static Random random_packet_loss_generator = new Random();
+    
     private void getInputForMap() {
         try {
             byte[] buf = new byte[1024];
@@ -88,8 +92,24 @@ public class MapInternet extends Thread {
             DatagramPacket receivePacket = new DatagramPacket(buf, buf.length);
 
             recieving_socket.receive(receivePacket);
+            
+            // Generates fake packet loss to mimic real packet loss in long distance internet connection
+            int chance_of_dropped_packet1 = random_packet_loss_generator.nextInt(100);
+            if(chance_of_dropped_packet1 < 5) {
+                //System.out.println("lost a packet [mock packet loss level 1]");
+                return;
+            }
+            
             String decoded_string_with_trailing_zeros = new String(receivePacket.getData(),
                     receivePacket.getOffset(), receivePacket.getLength(), "UTF-8");
+            
+            // Generates fake packet loss to mimic real packet loss in long distance internet connection
+            int chance_of_dropped_packet2 = random_packet_loss_generator.nextInt(100);
+            if(chance_of_dropped_packet2 < 5) {
+                //System.out.println("lost a packet [mock packet loss level 2]");
+                return;
+            }
+            
             //System.out.println("Map received a receivePacket");
             //RunGame.dbgOut("The map recieved a receivePacket in Map.GetMapInputFromUsers.run() from address: " + receivePacket.getAddress().toString(), 6);
 
@@ -319,7 +339,7 @@ public class MapInternet extends Thread {
                 } catch (InterruptedException e) {
                     return;
                 }
-                byte[] to_send = ControllerInternet.bundleToBytes(bundle_to_send_);
+                byte[] to_send = ControllerInternet_NEW.bundleToBytes(bundle_to_send_);
                 if (frame_number % 256 == 0) {
                     System.out.print("Without compression, number of bytes sent = " + to_send.length);
                 }

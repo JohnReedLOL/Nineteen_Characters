@@ -1,6 +1,6 @@
 package src.io.controller;
 
-import src.Not_part_of_iteration_2_requirements.ControllerInternet;
+import src.Not_part_of_iteration_2_requirements.ControllerInternet_NEW;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -32,7 +32,7 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
     //The queue of keyboard input in the main game. 
     private ConcurrentLinkedQueue<Character> characterQueue_ = new ConcurrentLinkedQueue<Character>();
     // private Thread controllerThread_ = Thread.currentThread(); Bad because constructor could be called by another thread.
-    private final ControllerInternet internet = new ControllerInternet(this);
+    private final ControllerInternet_NEW internet = new ControllerInternet_NEW(this);
 
     private Map map_;
 
@@ -81,7 +81,7 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
             //System.out.println("Entetered sleep loop");
             try {
                 //if(!controllerThread_.interrupted()){//If we are interuppted, don't bother sleeping again.
-                Thread.sleep(100L);
+                Thread.sleep(20L);
                 process();
                 //}
             } catch (InterruptedException e) {

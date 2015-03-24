@@ -30,71 +30,95 @@ import src.RunGame;
  *
  * @author John-Michael Reed
  */
-public final class ControllerInternet {
+public final class ControllerInternet_NEW {
 
     private static InetAddress address = null;
 
-    private static DatagramSocket udp_socket_for_incoming_signals = null;
+    private static DatagramSocket udp_socket_for_outgoing_signals = null;
     private static final Random rand = new Random();
-    private static final String unique_id_string = ControllerInternet.getMacAddress();
+    private static final String unique_id_string = getMacAddress();
     //private final String monitor_For_UDP_Sender = "";
-    private final UDP_Sender_Thread sender_thread;
+    private final UDP_Receiver_Thread receiver_thread;
     private final Controller who_I_am_providing_internet_to_;
     private boolean is_internet_connected = false;
+    // keeps returning the current value of this IO_Bundle
+    private volatile IO_Bundle last_thing_received = null;
 
-    public ControllerInternet(Controller who_I_am_providing_internet_to) {
-        sender_thread = new UDP_Sender_Thread();
-        sender_thread.start();
+    public ControllerInternet_NEW(Controller who_I_am_providing_internet_to) {
+        receiver_thread = new UDP_Receiver_Thread();
+        receiver_thread.start();
         try {
-            udp_socket_for_incoming_signals = new DatagramSocket(MapInternet.UDP_PORT_NUMBER_FOR_MAP_SENDING_AND_CLIENT_RECIEVING);
+            udp_socket_for_outgoing_signals = new DatagramSocket();
         } catch (Exception e) {
             e.printStackTrace();
         }
         who_I_am_providing_internet_to_ = who_I_am_providing_internet_to;
     }
 
-    private class UDP_Sender_Thread extends Thread {
+    private class UDP_Receiver_Thread extends Thread {
 
-        private DatagramSocket udp_socket_for_outgoing_signals;
-        private DatagramPacket packet_to_send = null;
+        private DatagramSocket udp_socket_for_incoming_signals;
+        private DatagramPacket packet_to_receive = null;
         private volatile boolean is_notified = false;
 
-        public synchronized void setPacketAndNotify(DatagramPacket s) {
-            packet_to_send = s;
-            is_notified = true;
-            notify();
-        }
-
-        public UDP_Sender_Thread() {
+        public UDP_Receiver_Thread() {
             try {
-                udp_socket_for_outgoing_signals = new DatagramSocket();
-                udp_socket_for_outgoing_signals.setReuseAddress(true);
+                udp_socket_for_incoming_signals = new DatagramSocket(MapInternet.UDP_PORT_NUMBER_FOR_MAP_SENDING_AND_CLIENT_RECIEVING);
+                udp_socket_for_incoming_signals.setReuseAddress(true);
+                //udp_socket_for_incoming_signals.s
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
         public synchronized void run() {
-            while (! Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
+                // recieve IO_Bundle from map over UDP connection
+                last_thing_received = getBundleFromBufferOfSize(60000);
+            }
+            System.out.println("Controller Internet receiving thread was interupted");
+        }
+
+        /**
+         * Kills the program if the buffer is not big enough [testing]
+         *
+         * @param buffer_size
+         * @return
+         */
+        private IO_Bundle getBundleFromBufferOfSize(int buffer_size) {
+            boolean is_too_small = true;
+            IO_Bundle to_return = null;
+
+            while (is_too_small) {
+                byte[] recieved = new byte[buffer_size];
+                DatagramPacket recvPacket = new DatagramPacket(recieved, recieved.length);
                 try {
-                    if (!is_notified) {
-                        this.wait();
-                        udp_socket_for_outgoing_signals.send(packet_to_send);
-                    }
-                    is_notified = false;
-                } catch (InterruptedException i) {
-                    // This thread got interrupted.
-                    return; // safely kill the thread
-                } catch (IOException io) {
-                    io.printStackTrace();
+                    udp_socket_for_incoming_signals.receive(recvPacket);
+                } catch (IOException ioe) {
+                    System.err.println("Failed to receieve data in getBundleFromBufferOfSize");
+                    ioe.printStackTrace();
+                    RunGame.closeGame();
+                    System.exit(-4);
+                }
+                try {
+                    to_return = ControllerInternet_OLD.bytesToBundle(recieved);
+                    is_too_small = false;
+                } catch (IOException eof) {
+                    eof.printStackTrace();
+                    System.err.println("The map is too big to fit in the internet buffer.");
+                    // if the buffer is too small.
+                    //buffer_size = buffer_size * 2;
+                    RunGame.closeGame();
+                    System.exit(-4);
                 }
             }
+            return to_return;
         }
     }
 
     public void terminate() {
         try {
-            sender_thread.interrupt(); // make the udp_sender thread commit suicide.
+            receiver_thread.interrupt(); // make the udp_sender thread commit suicide.
             is_internet_connected = false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,16 +140,16 @@ public final class ControllerInternet {
      * to render the view.
      */
     public IO_Bundle sendStuffToMap(String avatar_name, Enum key_command, int width, int height, String optional_text) {
-        if(!who_I_am_providing_internet_to_.isUsingInternet()) {
+        if (!who_I_am_providing_internet_to_.isUsingInternet()) {
             System.err.println("Impossible exception - Controller is using internet and not using internet");
             System.exit(-87);
         }
-        if ( !is_internet_connected ) {
+        if (!is_internet_connected) {
             final int error_code = makeConnectionUsingIP_Address("localhost");
-            if(error_code == 0) {
+            if (error_code == 0) {
             } else {
                 who_I_am_providing_internet_to_.tellNotToUseNetwork();
-                System.err.println("An impossible error occured in ControllerInternet.sendStuffToMap(). Could not connect to localhost");
+                System.err.println("An impossible error occured in Redone_Controller_Internet.sendStuffToMap(). Could not connect to localhost");
                 System.exit(-43);
                 return null;
             }
@@ -134,19 +158,16 @@ public final class ControllerInternet {
             final String to_send = unique_id_string + " " + avatar_name + " "
                     + key_command.name() + " " + width + " " + height + " " + optional_text;
             final byte[] buf = to_send.getBytes();
-            final DatagramPacket packet = new DatagramPacket(buf, buf.length, ControllerInternet.address, MapInternet.UDP_PORT_NUMBER_FOR_MAP_RECIEVING_AND_CLIENT_SENDING);
-            if (ControllerInternet.udp_socket_for_incoming_signals != null) {
-                sender_thread.setPacketAndNotify(packet);
+            final DatagramPacket packet_to_send = new DatagramPacket(buf, buf.length, address, MapInternet.UDP_PORT_NUMBER_FOR_MAP_RECIEVING_AND_CLIENT_SENDING);
+            if (udp_socket_for_outgoing_signals != null) {
+                udp_socket_for_outgoing_signals.send(packet_to_send);
             } else {
                 System.out.println("UDP or TCP or input stream is null in " + "Internet.sendStuffToMap(" + avatar_name + ", " + key_command.name() + ",...)");
                 System.out.println("Impossible error in " + "Internet.sendStuffToMap(" + avatar_name + ", " + key_command.name() + ",...)");
                 System.exit(-23);
             }
-            // recieve IO_Bundle from map over UDP connection
-            IO_Bundle to_recieve = getBundleFromBufferOfSize(60000);
-            // Decompression the IO_Bundle if characters are compressed.
-            return to_recieve;
-            //}
+            // might be one frame behind
+            return last_thing_received;
 
         } catch (Exception e) {
             System.err.println("Exception in " + "Internet.sendStuffToMap(" + avatar_name + ", " + key_command.name() + ",...)" + " named: " + e.toString());
@@ -156,43 +177,8 @@ public final class ControllerInternet {
     }
 
     /**
-     * Kills the program if the buffer is not big enough [testing]
-     * @param buffer_size
-     * @return 
-     */
-    private IO_Bundle getBundleFromBufferOfSize(int buffer_size) {
-        boolean is_too_small = true;
-        IO_Bundle to_return = null;
-
-        while (is_too_small) {
-            byte[] recieved = new byte[buffer_size];
-            DatagramPacket recvPacket = new DatagramPacket(recieved, recieved.length);
-            try {
-                udp_socket_for_incoming_signals.receive(recvPacket);
-            } catch (IOException ioe) {
-                System.err.println("Failed to receieve data in getBundleFromBufferOfSize");
-                ioe.printStackTrace();
-                RunGame.closeGame();
-                System.exit(-4);
-            }
-            try {
-                to_return = ControllerInternet.bytesToBundle(recieved);
-                is_too_small = false;
-            } catch (IOException eof) {
-                eof.printStackTrace();
-                System.err.println("The map is too big to fit in the internet buffer.");
-                // if the buffer is too small.
-                //buffer_size = buffer_size * 2;
-                RunGame.closeGame();
-                System.exit(-4);
-            }
-        }
-        return to_return;
-    }
-
-    /**
      * Allows the controller to connects itself to an internet connection and
-     * use ControllerInternet.sendStuffToMap(String, Enum, int, int, "")
+ use ControllerInternet_OLD.sendStuffToMap(String, Enum, int, int, "")
      *
      * @param ip_address - use "localhost" to connect to local machine, ex.
      * "192.***.***.***".
@@ -200,12 +186,12 @@ public final class ControllerInternet {
      */
     public int makeConnectionUsingIP_Address(String ip_address) {
         try {
-            ControllerInternet.address = InetAddress.getByName(ip_address);
+            address = InetAddress.getByName(ip_address);
         } catch (IOException e) {
             //e.printStackTrace();
             is_internet_connected = false;
             return -1;
-        }  
+        }
         is_internet_connected = true;
         return 0;
     }

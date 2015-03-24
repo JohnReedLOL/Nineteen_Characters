@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 
 import src.HardCodedStrings;
 import src.IO_Bundle;
-import src.Not_part_of_iteration_2_requirements.ControllerInternet;
+import src.Not_part_of_iteration_2_requirements.ControllerInternet_NEW;
 import src.Key_Commands;
 import src.Not_part_of_iteration_2_requirements.Music;
 import src.QueueCommandInterface;
