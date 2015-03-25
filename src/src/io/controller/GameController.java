@@ -276,11 +276,6 @@ public class GameController extends Controller {
     private int last_num_coins = -10;
 
     private IO_Bundle sendCommandToMapWithText(Key_Commands command, String input) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            //System.err.println("GameController is running on the Swing Dispatch Thread input sendCommandToMapWithText [Bad]");
-        } else {
-            //System.out.println("GameController is not running on the Swing Dispatch Thread input sendCommandToMapWithText [Good]");
-        }
         if (command == null) {
             return null;
         }
@@ -290,9 +285,9 @@ public class GameController extends Controller {
             return null;
         }
         // Sound effects!!!!
-        this.handleSoundEffect(command, to_return);
+        this.handleSoundEffect(last_key, to_return);
 
-        if (to_return != null && command == Key_Commands.OBSERVE) {
+        if (to_return != null && last_key == Key_Commands.OBSERVE) {
             if (to_return.observation_string_ == null) {
                 System.err.println("The observation string is not allowed to be null");
                 System.exit(4);
@@ -305,7 +300,7 @@ public class GameController extends Controller {
         }
 
         if (to_return != null && to_return.strings_for_communication_ != null
-                && !to_return.strings_for_communication_.isEmpty() && Key_Commands.GET_INTERACTION_OPTIONS.equals(command)) {
+                && !to_return.strings_for_communication_.isEmpty() && Key_Commands.GET_INTERACTION_OPTIONS.equals(last_key)) {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     Display.getDisplay().requestOutBoxFocus();
@@ -314,8 +309,8 @@ public class GameController extends Controller {
         }
 
         // Make the buttons says the right skill names.
-        if (to_return != null && to_return.occupation_ != null && command == Key_Commands.BECOME_SMASHER || command == Key_Commands.BECOME_SUMMONER
-                || command == Key_Commands.BECOME_SNEAK || command == Key_Commands.SWAP_SUB_OCCUPATION) {
+        if (to_return != null && to_return.occupation_ != null && last_key == Key_Commands.BECOME_SMASHER || last_key == Key_Commands.BECOME_SUMMONER
+                || last_key == Key_Commands.BECOME_SNEAK || last_key == Key_Commands.SWAP_SUB_OCCUPATION) {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     Display.getDisplay().getSkillButton(1).
@@ -329,9 +324,10 @@ public class GameController extends Controller {
                 }
             });
         }
+        last_key = command;
         return to_return;
     }
-
+    private Key_Commands last_key = Key_Commands.DO_ABSOLUTELY_NOTHING;
     private Queue<Viewport> views_ = new LinkedList<Viewport>();
 
     /**

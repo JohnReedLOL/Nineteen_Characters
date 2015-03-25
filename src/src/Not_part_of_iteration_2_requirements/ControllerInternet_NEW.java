@@ -101,7 +101,7 @@ public final class ControllerInternet_NEW {
                     System.exit(-4);
                 }
                 try {
-                    to_return = ControllerInternet_OLD.bytesToBundle(recieved);
+                    to_return = bytesToBundle(recieved);
                     is_too_small = false;
                 } catch (IOException eof) {
                     eof.printStackTrace();
