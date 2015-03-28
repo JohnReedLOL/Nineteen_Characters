@@ -55,23 +55,19 @@ public class RunGame {
 
     /**
      * Get the current file name, method name, and line number.
-     *
-     * @return int - Current line number.
+     * @return String - "Classpath.methodName(Filename:Line#)"
      */
-    public static String getLineNumber() {
-        StackTraceElement stack_trace = Thread.currentThread().getStackTrace()[2];
-        return "\n" + stack_trace.getFileName().replace(".java", "") + " " 
-                + "" + stack_trace.getMethodName() + "() " +
-                stack_trace.getLineNumber() + "\n";
+    public static String getStackTrace () {
+        final StackTraceElement stack_trace = Thread.currentThread().getStackTrace()[2];
+        return "\n" + stack_trace.toString() + "\n";
     }
 
     /**
-     * Takes in a new [not yet started] map thread. Kills the old one and
-     * replaces it.
+     * Takes in a new [not yet started] map thread. Kills the old one and replaces it.
      *
      * @param map new replacement map
      */
-    public static void setNewMap(Map map) {
+    public static void setNewMap ( Map map ) {
         grusomelyKillTheMap();
         try {
             Thread.sleep(10);
@@ -84,8 +80,8 @@ public class RunGame {
         map_ = map;
     }
 
-    public static void grusomelyKillTheMap() {
-        if (RunGame.map_ != null) {
+    public static void grusomelyKillTheMap () {
+        if ( RunGame.map_ != null ) {
             //map_.grusomelyKillTheMapThread();
             map_.interrupt();
             System.out.println("Killed the map thread");
@@ -94,8 +90,8 @@ public class RunGame {
         }
     }
 
-    public static void grusomelyKillTheController() {
-        if (RunGame.uc_ != null) {
+    public static void grusomelyKillTheController () {
+        if ( RunGame.uc_ != null ) {
             uc_.grusomelyKillTheControllerThread();
             System.out.println("Killed the controller thread");
         } else {
@@ -103,24 +99,24 @@ public class RunGame {
         }
     }
 
-    public static void closeGame() {
+    public static void closeGame () {
         grusomelyKillTheMap();
         grusomelyKillTheController();
     }
 
-    public static String getAvatarName() {
+    public static String getAvatarName () {
         return avatar_.name_;
     }
 
-    public static void main(String[] args) {
+    public static void main ( String[] args ) {
         parseArgs(args); // Parse command line arguments
         handleArgs(args);
-        if (!pOpts_.lsg_flag) {
-            if (map_editor_mode_) {
+        if ( !pOpts_.lsg_flag ) {
+            if ( map_editor_mode_ ) {
                 startMapEditor();
             }
 
-            if (map_ == null) {
+            if ( map_ == null ) {
                 initialize();
                 populateMap();
             }
@@ -128,7 +124,7 @@ public class RunGame {
         startGame();
     }
 
-    private static int startNewGame() {
+    private static int startNewGame () {
 
         initialize(); // Initialize any data we need to before loading
         populateMap();//Add stuff into the map
@@ -143,7 +139,7 @@ public class RunGame {
         return 0;
     }
 
-    private static int startMapEditor() {
+    private static int startMapEditor () {
         initialize(); // Initialize any data we need to before loading
         coverMapInGrass(map_);
         uc_ = new MapEditorController(map_);
@@ -151,10 +147,10 @@ public class RunGame {
         return 0;
     }
 
-    private static void coverMapInGrass(Map map_2) {
+    private static void coverMapInGrass ( Map map_2 ) {
         MapAddableFactory factory = new MapAddableFactory();
-        for (int x = 0; x < map_2.width_; ++x) {
-            for (int y = 0; y < map_2.height_; ++y) {
+        for ( int x = 0; x < map_2.width_; ++x ) {
+            for ( int y = 0; y < map_2.height_; ++y ) {
                 MapAddable addable = factory.getAddable(AddableThingEnum.GRASS_TERRAIN);
                 addable.addToMap(map_2, x, y);
 
@@ -162,7 +158,7 @@ public class RunGame {
         }
     }
 
-    public static void loadGame(String file_path) {
+    public static void loadGame ( String file_path ) {
         /*
          Map newMap = SavedGame.loadGame(file_path);
          if (newMap == null) {
@@ -173,16 +169,16 @@ public class RunGame {
     }
 
     // <editor-fold desc="GAME METHODS" defaultstate="collapsed">
-    private static void exitGame() {
+    private static void exitGame () {
 
     }
 
-    private static void initialize() {
+    private static void initialize () {
         map_ = new Map(mapWidth_, mapHeight_);
         map_.start();
     }
 
-    private static void populateMap() {
+    private static void populateMap () {
         avatar_ = new Avatar(avatar_name, '☃');
         // map_.addAsAvatar(avatar_, 0, 0);
         map_.addAsAvatar(avatar_, mapWidth_ / 2 - 1, mapHeight_ / 2 - 1);
@@ -288,15 +284,15 @@ public class RunGame {
 
         map_.addItem(staff, 20, 6);
 
-        for (int y = 0; y < mapHeight_; ++y) {
-            for (int x = 0; x < mapWidth_; ++x) {
+        for ( int y = 0; y < mapHeight_; ++y ) {
+            for ( int x = 0; x < mapWidth_; ++x ) {
                 Terrain land = new Terrain("land", '▨', false, false);
-                if (y == 4) {
-                    if (x == 2) {
+                if ( y == 4 ) {
+                    if ( x == 2 ) {
                         land.addDecal('☠', Color.black);
-                    } else if (x == 6) {
+                    } else if ( x == 6 ) {
                         land.addDecal('★', Color.yellow);
-                    } else if (x == 9) {
+                    } else if ( x == 9 ) {
                         land.addDecal('✚', Color.red);
                     }
                 }
@@ -304,7 +300,7 @@ public class RunGame {
             }
         }
 
-        for (int x = 0; x < mapWidth_; ++x) {
+        for ( int x = 0; x < mapWidth_; ++x ) {
             Terrain river = new Terrain("blue_river", '~', true, false);
             map_.addTerrain(river, x, 18);
         }
@@ -338,8 +334,8 @@ public class RunGame {
          */
     }
 
-    private static void startGame() {
-        if (map_ == null) {
+    private static void startGame () {
+        if ( map_ == null ) {
             RunGame.errOut("startGame(): invalid (null) map");
             return;
         }
@@ -352,7 +348,7 @@ public class RunGame {
         (new Thread(uc_)).start();
     }
 
-    public static void saveGameToDisk(String filepath) {
+    public static void saveGameToDisk ( String filepath ) {
         SavedGame.saveGame(filepath, map_, uc_.getUserName()); // save game to file "foo"
     }
 
@@ -370,9 +366,8 @@ public class RunGame {
      * 6 - Special debug level for UDP packet output
      */
     /**
-     * This class holds information about optional program utilities which may
-     * be triggered via command line arguments. Reference {@link #parseArgs} for
-     * parsing implementation.
+     * This class holds information about optional program utilities which may be triggered via
+     * command line arguments. Reference {@link #parseArgs} for parsing implementation.
      */
     private static class ProgramOpts {
 
@@ -396,16 +391,15 @@ public class RunGame {
     }
 
     /**
-     * Writes the provided String to the errOut stream with the prefix:
-     * (DEBUG|0).
+     * Writes the provided String to the errOut stream with the prefix: (DEBUG|0).
      *
      * @param s The String to write.
      */
-    public static void dbgOut(String s) {
-        if (s == null) {
+    public static void dbgOut ( String s ) {
+        if ( s == null ) {
             s = "NULL";
         }
-        if (pOpts_.dbg_flag) {
+        if ( pOpts_.dbg_flag ) {
             errOut("(DEBUG|0) " + s);
         }
     }
@@ -413,55 +407,51 @@ public class RunGame {
     /**
      * <strong>DEPRECIATED! DO NOT USE!</strong>
      *
-     * Writes the provided String to the errOut stream with the prefix:
-     * (DEBUG|X) where X is the debug level of the output. If the provided debug
-     * level is greater (larger number) than the debug level option set in
-     * {@link ProgramOpts}, the debug string will not be output.
+     * Writes the provided String to the errOut stream with the prefix: (DEBUG|X) where X is the
+     * debug level of the output. If the provided debug level is greater (larger number) than the
+     * debug level option set in {@link ProgramOpts}, the debug string will not be output.
      *
      * @param s The debug string to write
      * @param dLevel The debug level of the output
      */
-    public static void dbgOut(String s, int dLevel) {
-        if (dLevel > pOpts_.dbg_level) {
+    public static void dbgOut ( String s, int dLevel ) {
+        if ( dLevel > pOpts_.dbg_level ) {
             return;
         }
-        if (s == null) {
+        if ( s == null ) {
             s = "NULL";
         }
-        if (pOpts_.dbg_flag) {
+        if ( pOpts_.dbg_flag ) {
             errOut("(DEBUG|" + dLevel + ") " + s);
         }
     }
 
     /**
-     * Writes the provided Exception to the errOut stream with the prefix:
-     * "ERROR:" and WITHOUT a stack trace called. If you wish to print the stack
-     * tace, call {@link #errOut(Exception, boolean)} with printTrace set to
-     * TRUE.
+     * Writes the provided Exception to the errOut stream with the prefix: "ERROR:" and WITHOUT a
+     * stack trace called. If you wish to print the stack tace, call
+     * {@link #errOut(Exception, boolean)} with printTrace set to TRUE.
      *
      * @param e The Exception to write
      */
-    public static void errOut(Exception e) {
+    public static void errOut ( Exception e ) {
         errOut(e, false);
     }
 
     /**
-     * Writes the provided Exception to the errOut stream with the prefix:
-     * "ERROR:"
+     * Writes the provided Exception to the errOut stream with the prefix: "ERROR:"
      *
      * @param e The Exception object to write
-     * @param printTrace whether or not to print the Exception's stack trace
-     * below the error output
+     * @param printTrace whether or not to print the Exception's stack trace below the error output
      */
-    public static void errOut(Exception e, boolean printTrace) {
-        if (e == null) {
+    public static void errOut ( Exception e, boolean printTrace ) {
+        if ( e == null ) {
             errOut("errOut called with null Exception");
         }
         errOut("ERROR: " + e.toString());
-        if (!printTrace) {
+        if ( !printTrace ) {
             return;
         }
-        for (StackTraceElement elem : e.getStackTrace()) {
+        for ( StackTraceElement elem : e.getStackTrace() ) {
             errOut("TRACE: " + elem.toString());
         }
     }
@@ -471,8 +461,8 @@ public class RunGame {
      *
      * @param s The message to write out.
      */
-    public static void errOut(String s) {
-        if (s == null) {
+    public static void errOut ( String s ) {
+        if ( s == null ) {
             s = "NULL";
         }
         System.err.println("[" + errDateFormat_.format(new Date()) + "] " + s);
@@ -481,11 +471,11 @@ public class RunGame {
     /**
      * Commits the changes specified by the current {@link ProgramOpts}.
      *
-     * @param args The command line arguments that were given to this program
-     * (not used in this method)
+     * @param args The command line arguments that were given to this program (not used in this
+     * method)
      */
-    protected static void handleArgs(String[] args) {
-        if (pOpts_.err_flag) {
+    protected static void handleArgs ( String[] args ) {
+        if ( pOpts_.err_flag ) {
             try {
                 System.setErr(new PrintStream(args[pOpts_.err_path]));
                 dbgOut("ARGS: error out set piped to: " + args[pOpts_.err_path], 2);
@@ -493,12 +483,12 @@ public class RunGame {
                 errOut(e);
             }
         }
-        if (pOpts_.dbg_flag) {
+        if ( pOpts_.dbg_flag ) {
             dbgOut("ARGS: debug mode enabled at level: " + pOpts_.dbg_level, 2);
         }
-        if (pOpts_.lsg_flag) {
+        if ( pOpts_.lsg_flag ) {
             Map tmp_map = SavedGame.loadGame(args[pOpts_.lsg_path], newUserName_); // attempt to load the saved game
-            if (tmp_map == null) // if the load has failed, log that
+            if ( tmp_map == null ) // if the load has failed, log that
             {
                 RunGame.errOut("MAIN: Could not load map from: " + args[pOpts_.lsg_path]);
             } else {
@@ -506,27 +496,27 @@ public class RunGame {
                 setNewMap(tmp_map); // otherwise, apply the loaded map
             }
         }
-        if (pOpts_.editor_flag) {
+        if ( pOpts_.editor_flag ) {
             map_editor_mode_ = true;
         }
     }
 
     /**
-     * Parses an array of String objects for program options and sets their
-     * appropriate values in {@link ProgramOpts}.
+     * Parses an array of String objects for program options and sets their appropriate values in
+     * {@link ProgramOpts}.
      *
      * @param args The command line arguments that were given to this program
      */
-    protected static void parseArgs(String[] args) {
+    protected static void parseArgs ( String[] args ) {
         pOpts_ = new ProgramOpts();
 
-        for (int a = 0; a < args.length; a++) {
+        for ( int a = 0; a < args.length; a++ ) {
             // DEBUG
-            for (String m : pOpts_.dbg_match) {
-                if (m.equals(args[a])) {
-                    if (args.length > a + 1) {
+            for ( String m : pOpts_.dbg_match ) {
+                if ( m.equals(args[a]) ) {
+                    if ( args.length > a + 1 ) {
                         int temp = Integer.parseInt(args[a + 1]);
-                        if (temp > 0) {
+                        if ( temp > 0 ) {
                             pOpts_.dbg_level = temp;
                         }
                     }
@@ -536,24 +526,24 @@ public class RunGame {
             }
 
             // LOAD SAVED GAME
-            for (String m : pOpts_.lsg_match) {
-                if (m.equals(args[a]) && (args.length > a + 1)) {
+            for ( String m : pOpts_.lsg_match ) {
+                if ( m.equals(args[a]) && (args.length > a + 1) ) {
                     pOpts_.lsg_path = a + 1;
                     pOpts_.lsg_flag = true;
                     break;
                 }
             }
             // REDIRECT STDERR
-            for (String m : pOpts_.err_match) {
-                if (m.equals(args[a]) && (args.length > a + 1)) {
+            for ( String m : pOpts_.err_match ) {
+                if ( m.equals(args[a]) && (args.length > a + 1) ) {
                     pOpts_.err_path = a + 1;
                     pOpts_.err_flag = true;
                     break;
                 }
             }
             // Map Editing
-            for (String m : pOpts_.editor_match) {
-                if (m.equals(args[a])) {
+            for ( String m : pOpts_.editor_match ) {
+                if ( m.equals(args[a]) ) {
                     pOpts_.editor_flag = true;
                     break;
                 }

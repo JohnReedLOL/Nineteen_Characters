@@ -280,7 +280,7 @@ public class GameController extends Controller {
         }
         final IO_Bundle to_return = super.getMessenger().sendCommandToMap(command, input);
         if (to_return == null) {
-            System.out.println("IO_Bundle to return is " + to_return + ". " + RunGame.getLineNumber());
+            System.out.println("IO_Bundle to return is " + to_return + ". " + RunGame.getStackTrace());
             return null;
         }
         // Sound effects!!!!

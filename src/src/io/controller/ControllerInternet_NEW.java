@@ -105,7 +105,7 @@ public final class ControllerInternet_NEW {
                 try {
                     udp_socket_for_incoming_signals.receive(recvPacket);
                     int received_bytes = recvPacket.getLength();
-                    //System.out.println("Received length is " + received_bytes + RunGame.getLineNumber());
+                    //System.out.println("Received length is " + received_bytes + RunGame.getStackTrace());
                 } catch (IOException ioe) {
                     System.out.println("Failed to receieve data in getBundleFromBufferOfSize");
                     ioe.printStackTrace();
@@ -118,7 +118,7 @@ public final class ControllerInternet_NEW {
                 } catch (IOException eof) {
                     current_buffer_size_ *= 2;
                     System.out.println("Internet buffer size increased to " + current_buffer_size_ + 
-                            "." + RunGame.getLineNumber());
+                            "." + RunGame.getStackTrace());
                     throw eof;
                     // if the buffer is too small.
                     //buffer_size = current_buffer_size_ * 2;
