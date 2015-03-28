@@ -1,6 +1,5 @@
 package src.model;
 
-import src.Not_part_of_iteration_2_requirements.MapInternet;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

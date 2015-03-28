@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.Not_part_of_iteration_2_requirements;
+package src;
 
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
@@ -141,6 +141,6 @@ public class Music extends Application implements Runnable {
                 music_sound.play();
             }
         };
-        soundPool.execute(soundPlay);
+        //soundPool.execute(soundPlay);
     }
 }

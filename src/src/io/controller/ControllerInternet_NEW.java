@@ -1,4 +1,4 @@
-package src.Not_part_of_iteration_2_requirements;
+package src.io.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,7 +21,7 @@ import src.io.controller.Controller;
 import src.io.controller.GameController;
 
 import src.model.Map;
-import src.Not_part_of_iteration_2_requirements.MapInternet;
+import src.model.MapInternet;
 import src.RunGame;
 
 /**
@@ -74,28 +74,39 @@ public final class ControllerInternet_NEW {
         public synchronized void run() {
             while (!Thread.currentThread().isInterrupted()) {
                 // recieve IO_Bundle from map over UDP connection
-                last_thing_received = getBundleFromBufferOfSize(60000);
+                try {
+                    IO_Bundle to_set = getBundleFromBuffer();
+                    last_thing_received = to_set;
+                } catch (IOException e) {
+                    
+                }
             }
+
             System.out.println("Controller Internet receiving thread was interupted");
         }
+
+        private int current_buffer_size_ = 100;
 
         /**
          * Kills the program if the buffer is not big enough [testing]
          *
          * @param buffer_size
+         * @throws IOEXception if UDP buffer is too small
          * @return
          */
-        private IO_Bundle getBundleFromBufferOfSize(int buffer_size) {
+        private IO_Bundle getBundleFromBuffer() throws IOException {
             boolean is_too_small = true;
             IO_Bundle to_return = null;
 
             while (is_too_small) {
-                byte[] recieved = new byte[buffer_size];
+                byte[] recieved = new byte[current_buffer_size_];
                 DatagramPacket recvPacket = new DatagramPacket(recieved, recieved.length);
                 try {
                     udp_socket_for_incoming_signals.receive(recvPacket);
+                    int received_bytes = recvPacket.getLength();
+                    //System.out.println("Received length is " + received_bytes + RunGame.getLineNumber());
                 } catch (IOException ioe) {
-                    System.err.println("Failed to receieve data in getBundleFromBufferOfSize");
+                    System.out.println("Failed to receieve data in getBundleFromBufferOfSize");
                     ioe.printStackTrace();
                     RunGame.closeGame();
                     System.exit(-4);
@@ -104,12 +115,14 @@ public final class ControllerInternet_NEW {
                     to_return = bytesToBundle(recieved);
                     is_too_small = false;
                 } catch (IOException eof) {
-                    eof.printStackTrace();
-                    System.err.println("The map is too big to fit in the internet buffer.");
+                    current_buffer_size_ *= 2;
+                    System.out.println("Internet buffer size increased to " + current_buffer_size_ + 
+                            "." + RunGame.getLineNumber());
+                    throw eof;
                     // if the buffer is too small.
-                    //buffer_size = buffer_size * 2;
-                    RunGame.closeGame();
-                    System.exit(-4);
+                    //buffer_size = current_buffer_size_ * 2;
+                    //RunGame.closeGame();
+                    //System.exit(-4);
                 }
             }
             return to_return;
@@ -178,7 +191,7 @@ public final class ControllerInternet_NEW {
 
     /**
      * Allows the controller to connects itself to an internet connection and
- use ControllerInternet_OLD.sendStuffToMap(String, Enum, int, int, "")
+     * use ControllerInternet_OLD.sendStuffToMap(String, Enum, int, int, "")
      *
      * @param ip_address - use "localhost" to connect to local machine, ex.
      * "192.***.***.***".

@@ -1,6 +1,5 @@
 package src;
 
-import src.Not_part_of_iteration_2_requirements.Music;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -55,6 +54,18 @@ public class RunGame {
     private static StringBuilder newUserName_ = new StringBuilder();
 
     /**
+     * Get the current line number.
+     *
+     * @return int - Current line number.
+     */
+    public static String getLineNumber() {
+        StackTraceElement stack_trace = Thread.currentThread().getStackTrace()[2];
+        return "\n" + stack_trace.getFileName().replace(".java", "") + " " 
+                + "" + stack_trace.getMethodName() + "() " +
+                stack_trace.getLineNumber() + "\n";
+    }
+
+    /**
      * Takes in a new [not yet started] map thread. Kills the old one and
      * replaces it.
      *
@@ -103,17 +114,17 @@ public class RunGame {
 
     public static void main(String[] args) {
         parseArgs(args); // Parse command line arguments
-    	handleArgs(args);
-    	if(!pOpts_.lsg_flag){
-    		if (map_editor_mode_) {
-    			startMapEditor();
-    		}
+        handleArgs(args);
+        if (!pOpts_.lsg_flag) {
+            if (map_editor_mode_) {
+                startMapEditor();
+            }
 
-    	if (map_ == null) {
-    		initialize();
-    		populateMap();
-    	}
-    }
+            if (map_ == null) {
+                initialize();
+                populateMap();
+            }
+        }
         startGame();
     }
 
@@ -499,6 +510,7 @@ public class RunGame {
             map_editor_mode_ = true;
         }
     }
+
     /**
      * Parses an array of String objects for program options and sets their
      * appropriate values in {@link ProgramOpts}.

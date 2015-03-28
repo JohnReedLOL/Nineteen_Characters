@@ -1,4 +1,4 @@
-package src.Not_part_of_iteration_2_requirements;
+package src.model;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.PatternSyntaxException;
 import src.IO_Bundle;
 import src.Key_Commands;
+import src.io.controller.ControllerInternet_NEW;
 import src.RunGame;
 import src.model.Map;
 import src.model.constructs.Entity;
@@ -84,10 +85,11 @@ public class MapInternet extends Thread {
     // Generates fake packet loss to mimic real packet loss in long distance internet connection
     final static Random random_packet_loss_generator = new Random();
     
+    private final int current_buffer_size_ = 1024;
+    
     private void getInputForMap() {
+        byte[] buf = new byte[current_buffer_size_];
         try {
-            byte[] buf = new byte[1024];
-
             // receive request
             DatagramPacket receivePacket = new DatagramPacket(buf, buf.length);
 
@@ -341,7 +343,7 @@ public class MapInternet extends Thread {
                 }
                 byte[] to_send = ControllerInternet_NEW.bundleToBytes(bundle_to_send_);
                 if (frame_number % 256 == 0) {
-                    System.out.print("Without compression, number of bytes sent = " + to_send.length);
+                    System.out.println("Number of bytes sent = " + to_send.length + "." + RunGame.getLineNumber());
                 }
                 ++frame_number;
                 DatagramPacket packet_to_send = new DatagramPacket(
