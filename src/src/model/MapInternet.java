@@ -81,12 +81,12 @@ public class MapInternet extends Thread {
         }
         this.stop();
     }
-    
+
     // Generates fake packet loss to mimic real packet loss in long distance internet connection
     final static Random random_packet_loss_generator = new Random();
-    
+
     private final int current_buffer_size_ = 1024;
-    
+
     private void getInputForMap() {
         byte[] buf = new byte[current_buffer_size_];
         try {
@@ -94,58 +94,47 @@ public class MapInternet extends Thread {
             DatagramPacket receivePacket = new DatagramPacket(buf, buf.length);
 
             recieving_socket.receive(receivePacket);
-            
+
             // Generates fake packet loss to mimic real packet loss in long distance internet connection
             int chance_of_dropped_packet1 = random_packet_loss_generator.nextInt(100);
-            if(chance_of_dropped_packet1 < 5) {
+            if (chance_of_dropped_packet1 < 5) {
                 //System.out.println("lost a packet [mock packet loss level 1]");
                 return;
             }
-            
-            String decoded_string_with_trailing_zeros = new String(receivePacket.getData(),
-                    receivePacket.getOffset(), receivePacket.getLength(), "UTF-8");
-            
+            MapMessage message_from_controller = null;
+            try {
+                message_from_controller = ControllerInternet_NEW.bytesToObject(receivePacket.getData());
+            } catch (IOException eof) {
+                System.out.println("Map internet buffer size is too small. "
+                        + RunGame.getLineNumber());
+                System.exit(76);
+            }
+
+            /*String decoded_string_with_trailing_zeros = new String(receivePacket.getData(),
+             receivePacket.getOffset(), receivePacket.getLength(), "UTF-8");*/
             // Generates fake packet loss to mimic real packet loss in long distance internet connection
             int chance_of_dropped_packet2 = random_packet_loss_generator.nextInt(100);
-            if(chance_of_dropped_packet2 < 5) {
+            if (chance_of_dropped_packet2 < 5) {
                 //System.out.println("lost a packet [mock packet loss level 2]");
                 return;
             }
-            
+
             //System.out.println("Map received a receivePacket");
             //RunGame.dbgOut("The map recieved a receivePacket in Map.GetMapInputFromUsers.run() from address: " + receivePacket.getAddress().toString(), 6);
-
             // "udp receivePacket recieved in GetMapInputFromUsers
-            String decoded_string = decoded_string_with_trailing_zeros.trim();
-
-            String[] splitArray;
-            try {
-                // split whenever at least one whitespace is encountered
-                splitArray = decoded_string.split("\\s+");
-            } catch (PatternSyntaxException ex) {
-                ex.printStackTrace();
-                System.exit(-15);
-                return;
-            }
-            String unique_id = splitArray[0];
-            String username = splitArray[0 + 1];
-            String command_enum_as_a_string = splitArray[1 + 1];
-            Key_Commands command = Key_Commands.valueOf(command_enum_as_a_string);
-            int width_from_center = Integer.parseInt(splitArray[2 + 1], 10);
-            int height_from_center = Integer.parseInt(splitArray[3 + 1], 10);
+            String unique_id = message_from_controller.unique_id_;
+            String username = message_from_controller.username_;
+            Key_Commands command = message_from_controller.command_;
+            int width_from_center = message_from_controller.width_from_center_;
+            int height_from_center = message_from_controller.height_from_center_;
             String optional_text;
-            if (splitArray.length == 4 + 1) {
+            if (message_from_controller.optional_text_ == null
+                    || message_from_controller.optional_text_.equals("")) {
                 optional_text = null;
-            } else if (splitArray.length >= 5 + 1) {
-                optional_text = "";
-                for (int i = 4 + 1; i < splitArray.length; ++i) {
-                    optional_text = optional_text + " " + splitArray[i];
-                }
+            } else {
+                optional_text = message_from_controller.optional_text_;
                 // RunGame.dbgOut("Optional text: " + optional_text, 6);
                 optional_text = optional_text.trim();
-            } else {
-                // RunGame.dbgOut("Error. splitArray.length == " + splitArray.length, 6);
-                return;
             }
             if (!users.containsKey(unique_id)) {
                 Packet_Sender new_users_packet_sender = new Packet_Sender(unique_id, receivePacket.getAddress());
@@ -165,25 +154,26 @@ public class MapInternet extends Thread {
             System.exit(-4);
         }
     }
+
     private IO_Bundle make_dead_packet() {
         IO_Bundle return_package = new IO_Bundle(
-                            "",
-                            null,
-                            null,
-                            null,
-                            // Don't for get left and right hand items
-                            null,
-                            null,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            null,
-                            null,
-                            null,
-                            -1,
-                            false
-                    );
+                "",
+                null,
+                null,
+                null,
+                // Don't for get left and right hand items
+                null,
+                null,
+                -1,
+                -1,
+                -1,
+                -1,
+                null,
+                null,
+                null,
+                -1,
+                false
+        );
         return return_package;
     }
 
@@ -246,14 +236,14 @@ public class MapInternet extends Thread {
                 } else {
                     char[][] view = null;
                     int[][] colors = null;
-                    
+
                     IO_Bundle return_package = make_dead_packet();
                     sender.setBundleAvatarAndNotify(to_recieve_command, return_package);
                     System.out.println("Map sent back a packet with just an indication of game over.");
                     return;
                 }
             } else if (command == null) {
-                IO_Bundle return_package = new IO_Bundle(to_recieve_command.getObservationString(),null, null, to_recieve_command.getInventory(),
+                IO_Bundle return_package = new IO_Bundle(to_recieve_command.getObservationString(), null, null, to_recieve_command.getInventory(),
                         // Don't for get left and right hand items
                         to_recieve_command.getStatsPack(), to_recieve_command.getOccupation(),
                         to_recieve_command.getNum_skillpoints_(), to_recieve_command.getBind_wounds_(),
@@ -341,7 +331,7 @@ public class MapInternet extends Thread {
                 } catch (InterruptedException e) {
                     return;
                 }
-                byte[] to_send = ControllerInternet_NEW.bundleToBytes(bundle_to_send_);
+                byte[] to_send = ControllerInternet_NEW.objectToBytes(bundle_to_send_);
                 if (frame_number % 256 == 0) {
                     System.out.println("Number of bytes sent = " + to_send.length + "." + RunGame.getLineNumber());
                 }

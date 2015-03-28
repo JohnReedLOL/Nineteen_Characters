@@ -23,6 +23,7 @@ import src.io.controller.GameController;
 import src.model.Map;
 import src.model.MapInternet;
 import src.RunGame;
+import src.model.MapMessage;
 
 /**
  * Used for sending and receiving data from a Controller [not part of Iteration
@@ -112,7 +113,7 @@ public final class ControllerInternet_NEW {
                     System.exit(-4);
                 }
                 try {
-                    to_return = bytesToBundle(recieved);
+                    to_return = bytesToObject(recieved);
                     is_too_small = false;
                 } catch (IOException eof) {
                     current_buffer_size_ *= 2;
@@ -152,7 +153,7 @@ public final class ControllerInternet_NEW {
      * @return IO_Bundle object containing all the data needed by the controller
      * to render the view.
      */
-    public IO_Bundle sendStuffToMap(String avatar_name, Enum key_command, int width, int height, String optional_text) {
+    public IO_Bundle sendStuffToMap(String avatar_name, src.Key_Commands key_command, int width, int height, String optional_text) {
         if (!who_I_am_providing_internet_to_.isUsingInternet()) {
             System.err.println("Impossible exception - Controller is using internet and not using internet");
             System.exit(-87);
@@ -168,9 +169,11 @@ public final class ControllerInternet_NEW {
             }
         }
         try {
-            final String to_send = unique_id_string + " " + avatar_name + " "
-                    + key_command.name() + " " + width + " " + height + " " + optional_text;
-            final byte[] buf = to_send.getBytes();
+            /*final String to_send = unique_id_string + " " + avatar_name + " "
+                    + key_command.name() + " " + width + " " + height + " " + optional_text;*/
+            final MapMessage to_send = new MapMessage(unique_id_string, avatar_name, 
+                    key_command, width, height, optional_text);
+            final byte[] buf = ControllerInternet_NEW.objectToBytes(to_send);
             final DatagramPacket packet_to_send = new DatagramPacket(buf, buf.length, address, MapInternet.UDP_PORT_NUMBER_FOR_MAP_RECIEVING_AND_CLIENT_SENDING);
             if (udp_socket_for_outgoing_signals != null) {
                 udp_socket_for_outgoing_signals.send(packet_to_send);
@@ -209,12 +212,12 @@ public final class ControllerInternet_NEW {
         return 0;
     }
 
-    public static byte[] bundleToBytes(IO_Bundle io_bundle) {
+    public static byte[] objectToBytes(Object object) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.flush();
-            oos.writeObject(io_bundle);
+            oos.writeObject(object);
             oos.flush();
             oos.close();
             // get the byte array of the object
@@ -223,7 +226,6 @@ public final class ControllerInternet_NEW {
             baos.close();
             return obj;
         } catch (Exception e) {
-            System.err.println("Exception in Internet.bundleToBytes(IO_Bundle io_bundle) named: " + e.toString());
             e.printStackTrace();
             System.exit(-78);
             return null;
@@ -231,20 +233,20 @@ public final class ControllerInternet_NEW {
     }
 
     /**
-     * THROWS AN IO EXCEPTION [EOF EXCEPTION] IF THE BYTE ARRAY SO TOO SMALL TO
+     * THROWS AN IO EXCEPTION [EOF EXCEPTION] IF THE BYTE ARRAY IS TOO SMALL TO
      * FIT THE OBJECT
      *
      * @param data
      * @return
      * @throws IOException
      */
-    public static IO_Bundle bytesToBundle(byte[] data) throws IOException {
+    public static <Type> Type bytesToObject(byte[] data) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ObjectInputStream ois = new ObjectInputStream(bais);
-        IO_Bundle to_return = null;
+        Type to_return = null;
         try {
             Object object = ois.readObject();
-            to_return = (IO_Bundle) object;
+            to_return = (Type) object;
         } catch (ClassNotFoundException cnfe) {
             System.err.println("Impossible error");
             cnfe.printStackTrace();

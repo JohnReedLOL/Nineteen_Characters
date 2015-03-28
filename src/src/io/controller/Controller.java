@@ -307,7 +307,7 @@ public abstract class Controller implements QueueCommandInterface<Character>, Ru
          */
         @Override
         public IO_Bundle sendCommandToMap(Key_Commands command, String input) {
-            return internet.sendStuffToMap(getUserName(), command,
+            return internet.sendStuffToMap( getUserName(), command,
                     getView().getWidth() / 2, getView().getHeight() / 2, input);
         }
     }
