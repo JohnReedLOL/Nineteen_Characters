@@ -37,6 +37,7 @@ abstract public class Entity extends DrawableThing {
     private int num_gold_coins_when_spawned_ = 10;
     private int num_gold_coins_possessed_ = num_gold_coins_when_spawned_;
     private String observation_string = "";
+
     public String getObservationString() {
         return observation_string;
     }
@@ -65,8 +66,6 @@ abstract public class Entity extends DrawableThing {
     public int getNumGoldCoins() {
         return num_gold_coins_possessed_;
     }
-
-
 
     protected void setNumGoldCoinsWhenSpawned(int amount) {
         num_gold_coins_when_spawned_ = amount;
@@ -148,7 +147,9 @@ abstract public class Entity extends DrawableThing {
         return num_skillpoints_;
     }
 
-    public void setSkillPoints(int newPoints) { num_skillpoints_ = newPoints; }
+    public void setSkillPoints(int newPoints) {
+        num_skillpoints_ = newPoints;
+    }
 
     // Non-occupation specific skills
     private int bind_wounds_ = 1;
@@ -157,7 +158,11 @@ abstract public class Entity extends DrawableThing {
         return bind_wounds_;
     }
 
-    public void setBind_wounds_(int value) { if (value > 0) bind_wounds_ = value; }
+    public void setBind_wounds_(int value) {
+        if (value > 0) {
+            bind_wounds_ = value;
+        }
+    }
 
     public int bindWounds() {
         this.getMapRelation().areaEffectFunctor.effectAreaWithinRadius(1, getBind_wounds_() + 1, Effect.HEAL);
@@ -170,7 +175,11 @@ abstract public class Entity extends DrawableThing {
         return bargain_;
     }
 
-    public void setBargain_(int value) { if (value > 0) bargain_ = value; }
+    public void setBargain_(int value) {
+        if (value > 0) {
+            bargain_ = value;
+        }
+    }
 
     private int observation_ = 1;
 
@@ -178,7 +187,11 @@ abstract public class Entity extends DrawableThing {
         return observation_;
     }
 
-    public void setObservation_(int value) { if (value > 0) observation_ = value; }
+    public void setObservation_(int value) {
+        if (value > 0) {
+            observation_ = value;
+        }
+    }
 
     /**
      * Gets information based on observation level. If the entity is facing up,
@@ -198,8 +211,8 @@ abstract public class Entity extends DrawableThing {
         // Checks if observe is succuessful, takes observation level into
         // account. If observation level is 11 or higher, success rate is %100.
         if (chanceForSuccessfulObserve >= (11 - observation_)) {
-            observation_string +=
-                    "Looking in direction: " + getFacingDirection() + "\n";
+            observation_string
+                    += "Looking in direction: " + getFacingDirection() + "\n";
 
             if (getFacingDirection() == FacingDirection.UP) {
                 for (int i = 0; i < observation_; ++i) {
@@ -869,7 +882,7 @@ abstract public class Entity extends DrawableThing {
      *
      * @author John-Michael Reed
      * @param target - entity to hit
-     * @return -1 if target is null, 0 if success
+     * @return -1 if target is null, 0 if attack is a success
      */
     public int sendAttack(Entity target_entity) {
         if (target_entity != null) {

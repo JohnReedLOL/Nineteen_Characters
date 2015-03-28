@@ -23,7 +23,7 @@ import src.model.constructs.Terrain;
 import src.model.constructs.items.Item;
 
 /**
- *
+ * An aggregation of MapTiles with methods to add and remove map constructs.
  * @author John-Michael Reed
  */
 public class Map extends Thread implements MapMapEditor_Interface, MapUser_Interface {
