@@ -54,7 +54,7 @@ public class RunGame {
     private static StringBuilder newUserName_ = new StringBuilder();
 
     /**
-     * Get the current line number.
+     * Get the current file name, method name, and line number.
      *
      * @return int - Current line number.
      */
