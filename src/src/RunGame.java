@@ -57,7 +57,7 @@ public class RunGame {
      * Get the current file name, method name, and line number.
      * @return String - "Classpath.methodName(Filename:Line#)"
      */
-    public static String getStackTrace () {
+    public static String getLineNumber () {
         final StackTraceElement stack_trace = Thread.currentThread().getStackTrace()[2];
         return "\n" + stack_trace.toString() + "\n";
     }

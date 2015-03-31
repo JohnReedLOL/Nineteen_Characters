@@ -106,7 +106,7 @@ public class MapInternet extends Thread {
                 message_from_controller = ControllerInternet_NEW.bytesToObject(receivePacket.getData());
             } catch (IOException eof) {
                 System.out.println("Map internet buffer size is too small. "
-                        + RunGame.getStackTrace());
+                        + RunGame.getLineNumber());
                 System.exit(76);
             }
 
@@ -333,7 +333,7 @@ public class MapInternet extends Thread {
                 }
                 byte[] to_send = ControllerInternet_NEW.objectToBytes(bundle_to_send_);
                 if (frame_number % 256 == 0) {
-                    System.out.println("Number of bytes sent = " + to_send.length + "." + RunGame.getStackTrace());
+                    System.out.println("Number of bytes sent = " + to_send.length + "." + RunGame.getLineNumber());
                 }
                 ++frame_number;
                 DatagramPacket packet_to_send = new DatagramPacket(
