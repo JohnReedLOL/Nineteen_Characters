@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+<project name="Ninteen" default="CreateJar">
+  <target name="CreateJar" description="Create Jar file">
+  <javac srcdir="src"
+	 encoding="UTF-8"
+         destdir="bin"
+         debug="on"
+         source="1.7"
+	 />
+        <jar jarfile="NineteenCharacters.jar" basedir="./bin" includes="**/**.class">
+	  <zipfileset dir="src/io/view/ASCIIART" prefix="src/io/view/ASCIIART"/>
+	  <zipfileset dir="src/io/view/display/Font" prefix="src/io/view/display/Font"/>
+  	  <manifest>
+  	    <attribute name="Main-Class" value="src.RunGame"/>
+  	    <attribute name="Class-Path" value="./"/>
+  	  </manifest>
+    	</jar>
+  </target>
+</project>

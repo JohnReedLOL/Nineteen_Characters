@@ -5,18 +5,18 @@
  */
 package src.model;
 
-import src.controller.Terrain;
+import src.model.constructs.Terrain;
 
 /**
  *
  * @author JohnMichaelReed
  */
 public class MapTerrain_Relation extends MapDrawableThing_Relation {
-
-    private final Terrain terrain_;
-
-    public MapTerrain_Relation(Terrain terrain) {
-        super(terrain);
+	
+    public MapTerrain_Relation(Map m, Terrain terrain) {
+        super(m);
         terrain_ = terrain;
     }
+    
+    private final Terrain terrain_;
 }

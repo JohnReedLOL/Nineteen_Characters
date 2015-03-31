@@ -1,0 +1,101 @@
+#+AUTHOR: Nineteen_Characters!
+* Font : This game works best with the following font
+Deja Vu monospace regular font
+* Running 
+Add any command line arguments to attempt to load a game.
+# * Running 
+# java -jar game.jar [-d [LEVEL]][-e FILE] [-l  FILE]
+
+# 	-d [LEVEL], --debug [LEVEL]
+# 		Activates debug mode, where debug outputs are sent to the error stream. Error stream may 
+# 		be redirected, as per the --err-out option. LEVEL is an integer number representing the level of 
+# 		detail requested in the debug output. If no value is specified, the default is level 1.
+		
+# 	-e FILE, --err-out FILE
+# 		Redirects STDERR messages to the given file
+		
+# 	-l FILE, --load FILE
+# 		Immediately attempts to load the given file as a saved game. If the game cannot be loaded, 
+# 		a new game is started instead.
+		
+* Loading a game
+After having saved a game, to load it back in, simply start the game, supplying the path to the file as a parameter. 
+#+BEGIN_SRC 
+--load file
+#+END_SRC
+* Controls
+** While the Character Creation Screen is visible
+- Hit S to create an avatar of type Smasher
+- Hit W for an avatar of type Summoner(W for WIZARD)
+- Hit C for an avatar of type Sneaker(C for CAT)
+#+CAPTION: The Characters available for selection
+#+BEGIN_SRC 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║      ____ _                               _       ____ _                     ║
+║     / ___| |__   ___   ___  ___  ___     / \     / ___| | __ _ ___ ___       ║
+║    | |   | '_ \ / _ \ / _ \/ __|/ _ \   / _ \   | |   | |/ _` / __/ __|      ║
+║    | |___| | | | (_) | (_) \__ \  __/  / ___ \  | |___| | (_| \__ \__ \      ║
+║     \____|_| |_|\___/ \___/|___/\___| /_/   \_\  \____|_|\__,_|___/___/      ║
+║                                                                              ║
+║                                                                              ║
+║                                                                              ║
+║                                                                              ║
+║S to Select a Smasher:                                                        ║
+║         -[.]                                                                 ║
+║         -|.|                                                                 ║
+║         -|.|                                                                 ║
+║         -|.|                                                                 ║
+║         -|.|                                                                 ║
+║         -|.|   ,'`.                                                          ║
+║         -|.|  ;\  /:                  W to Select a Summoner:                ║
+║         -|.| /  \/  \                               _,._                     ║
+║         -|.|<.<_\/_>,>                  .||,       /_ _\\                    ║
+║         -|.| \`.::,'/                  \.`',/      |'L'| |                   ║
+║         -|.|,'.'||'/.                  = ,. =      | -,| L                   ║
+║       ,-'|.|.`.____,'`.                / || \    ,-'\"/,'`.                  ║
+║     ,' .`|.| `.____,;/ \                 ||     ,'   `,,. `.                 ║
+║    ,'=-.`|.|\ .   \ |,':                 ,|____,' , ,;' \| |                 ║
+║   /_   :)|.|.`.___:,:,'|.               (3|\    _/|/'   _| |                 ║
+║  (  `-:;\|.|.`.)  |.`-':,\               ||/,-''  | >-'' _,\\                ║
+║  /.   /  ;.:--'   |    | ,`.             ||'      ==\ ,-'  ,'                ║
+║ / _>-'._.'-'.     |.   |' / )._                                              ║
+║:.'    ((.__;/     |    |._ /__ `.___                                         ║
+║`.>._.-' |)=(      |.   ;  '--.._,`-.`.                                       ║
+║         ',--'`-._ | _,:          `='`'                                       ║
+║                         _                ___       _.--.                     ║
+║C to Select a Sneaker:   \`.|\..----...-'`   `-._.-'_.-'`                     ║
+║                         /  ' `         ,       __.--'                        ║
+║                         )/' _/     \   `-_,   /                              ║
+║                         `-'" `"\_  ,_.-;_.-\_ ',                             ║
+║                             _.-'_./   {_.'   ; /                             ║
+║                            {_.-``-'         {_/                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+#+END_SRC
+
+** While the map is visible
+*** Items
+- Hit p pick up
+- Hit E to equip item
+- Hit U to unequip
+- Hit D to drop 
+*** View Switching
+- Hit i to open the stats and inventory screen
+
+*** Movement
+#+BEGIN_SRC 
+NW   N   NE
+  \  |  /
+   7 8 9
+ W-4   6-E
+   1 2 3
+  /  |  \
+SW   S   SE
+#+END_SRC
+*** Save Game
+- Hit S
+- A Save File will be created
+- There is one save file, named save.dave
+# - Format : yyMMdd_<number>.sav
+** In the Inventory screen
+*** View Switching
+Hit i to return to the map
